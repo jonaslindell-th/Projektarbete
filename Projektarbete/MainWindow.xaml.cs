@@ -81,7 +81,7 @@ namespace Projektarbete
             TextBlock cartTextBlock = CreateTextBlock("Your shopping cart", 18, TextAlignment.Center, leftGrid, 0, 0, 2);
             TextBlock discountTextBlock = CreateTextBlock("Enter discount code below", 12, TextAlignment.Center, leftGrid, 1, 0, 2);
 
-            TextBox discountTextBox = new TextBox{ Margin = new Thickness(5) };
+            TextBox discountTextBox = new TextBox { Margin = new Thickness(5) };
             leftGrid.Children.Add(discountTextBox);
             Grid.SetRow(discountTextBox, 2);
             Grid.SetColumnSpan(discountTextBox, 1);
@@ -275,7 +275,6 @@ namespace Projektarbete
         {
             if (cartListBox.SelectedIndex != -1)
             {
-                ;
                 shoppingCart.RemoveAt(cartListBox.SelectedIndex);
                 UpdateShoppingCart();
                 return;
@@ -293,7 +292,17 @@ namespace Projektarbete
         {
             if (productListBox.SelectedIndex != -1)
             {
-                shoppingCart.Add(productList[productListBox.SelectedIndex]);
+                if (shoppingCart.Contains(productList[productListBox.SelectedIndex]))
+                {
+                    int index = shoppingCart.IndexOf(productList[productListBox.SelectedIndex]);
+                    shoppingCart[index].Count += 1;
+                }
+                else
+                {
+                    shoppingCart.Add(productList[productListBox.SelectedIndex]);
+                    int index = shoppingCart.IndexOf(productList[productListBox.SelectedIndex]);
+                    shoppingCart[index].Count = 1;
+                }
                 UpdateShoppingCart();
                 return;
             }
@@ -305,12 +314,12 @@ namespace Projektarbete
             cartListBox.Items.Clear();
             foreach (Product product in shoppingCart)
             {
-                cartListBox.Items.Add(product.Title + " (" + product.Price + ") kr");
+                cartListBox.Items.Add(product.Title + " (" + product.Price + ") kr" + " (" + product.Count + ")");
             }
             decimal sum = 0;
             foreach (Product product in shoppingCart)
             {
-                sum += product.Price;
+                sum += product.Price * product.Count;
             }
             sumTextBlock.Text = "Shopping cart sum: " + Convert.ToString(sum) + " kr";
         }
