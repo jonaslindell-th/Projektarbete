@@ -81,16 +81,15 @@ namespace Projektarbete
             TextBlock cartTextBlock = CreateTextBlock("Your shopping cart", 18, TextAlignment.Center, leftGrid, 0, 0, 2);
             TextBlock discountTextBlock = CreateTextBlock("Enter discount code below", 12, TextAlignment.Center, leftGrid, 1, 0, 2);
 
-            TextBox discountTextBox = new TextBox
-            {
-                Margin = new Thickness(5)
-            };
+            TextBox discountTextBox = new TextBox{ Margin = new Thickness(5) };
             leftGrid.Children.Add(discountTextBox);
             Grid.SetRow(discountTextBox, 2);
-            Grid.SetColumnSpan(discountTextBox, 2);
+            Grid.SetColumnSpan(discountTextBox, 1);
 
-            CreateButton("Clear shopping cart", Brushes.PaleVioletRed, leftGrid, row:3, column:0, columnspan:2, ClearCartClick);
-            CreateButton("Remove selected product", Brushes.PaleVioletRed, leftGrid, row:4, column:0, columnspan:2, RemoveProductClick);
+            CreateButton("Validate coupon", leftGrid, 2, 2, 1, ValidateCoupon);
+
+            CreateButton("Clear shopping cart", Brushes.PaleVioletRed, leftGrid, row: 3, column: 0, columnspan: 2, ClearCartClick);
+            CreateButton("Remove selected product", Brushes.PaleVioletRed, leftGrid, row: 4, column: 0, columnspan: 2, RemoveProductClick);
 
             cartListBox = new ListBox
             {
@@ -146,44 +145,17 @@ namespace Projektarbete
             // #### End of middle grid definition ####
 
             // ##### Right grid definition ####
-            //Grid rightGrid = new Grid();
-            //mainGrid.Children.Add(rightGrid);
-            //rightGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            //rightGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            //rightGrid.RowDefinitions.Add(new RowDefinition());
-            //rightGrid.RowDefinitions.Add(new RowDefinition());
-            //Grid.SetRow(rightGrid, 0);
-            //Grid.SetColumn(rightGrid, 2);
             StackPanel rightGrid = new StackPanel();
             mainGrid.Children.Add(rightGrid);
             Grid.SetRow(rightGrid, 0);
             Grid.SetColumn(rightGrid, 2);
 
-            productHeading = new TextBlock 
-            {
-                Text = "Select product",
-                TextWrapping = TextWrapping.Wrap,
-                Margin = new Thickness(5),
-                FontFamily = new FontFamily("Arial"),
-                FontSize = 18,
-                TextAlignment = TextAlignment.Center
-            };
-            rightGrid.Children.Add(productHeading);
+            productHeading = CreateTextBlock("Select product", 18, TextAlignment.Center, rightGrid);
 
-            //productHeading = CreateTextBlock("Select product", 18, TextAlignment.Center, rightGrid, 0, 0, 1);
-
-            imageGrid = new Grid
-            {
-                VerticalAlignment = VerticalAlignment.Top,
-                //MaxHeight = 600,
-                //MaxWidth = 600,
-                Margin = new Thickness(5)
-            };
+            imageGrid = new Grid();
             rightGrid.Children.Add(imageGrid);
             imageGrid.RowDefinitions.Add(new RowDefinition());
             imageGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            Grid.SetRow(imageGrid, 1);
-            Grid.SetColumn(imageGrid, 0);
 
             currentImage = CreateImage("Images/Store.jpg");
             currentImage.Stretch = Stretch.Uniform;
@@ -191,18 +163,13 @@ namespace Projektarbete
             Grid.SetRow(currentImage, 0);
             Grid.SetColumn(currentImage, 0);
 
-            productDescription = new TextBlock
-            {
-                Text = "Product description: ",
-                TextWrapping = TextWrapping.Wrap,
-                Margin = new Thickness(5),
-                FontFamily = new FontFamily("Arial"),
-                FontSize = 14,
-                TextAlignment = TextAlignment.Left
-            };
-            rightGrid.Children.Add(productDescription);
-            //productDescription = CreateTextBlock("Product description: ", 14, TextAlignment.Left, rightGrid, 2, 0, 1);
+            productDescription = CreateTextBlock("Product description: ", 14, TextAlignment.Left, rightGrid);
             // ##### End of right grid definition ####
+        }
+
+        private void ValidateCoupon(object sender, RoutedEventArgs e)
+        {
+
         }
 
         /// <summary>
@@ -230,6 +197,20 @@ namespace Projektarbete
             button.Click += onClick;
         }
 
+        private void CreateButton(string content, Grid grid, int row, int column, int columnspan, RoutedEventHandler onClick)
+        {
+            Button button = new Button
+            {
+                Content = content,
+                Margin = new Thickness(5)
+            };
+            grid.Children.Add(button);
+            Grid.SetRow(button, row);
+            Grid.SetColumn(button, column);
+            Grid.SetColumnSpan(button, columnspan);
+            button.Click += onClick;
+        }
+
         private TextBlock CreateTextBlock(string text, int fontSize, TextAlignment alignment, Grid grid, int row, int column, int columnSpan)
         {
             TextBlock textBlock = new TextBlock
@@ -245,6 +226,21 @@ namespace Projektarbete
             Grid.SetRow(textBlock, row);
             Grid.SetColumn(textBlock, column);
             Grid.SetColumnSpan(textBlock, columnSpan);
+            return textBlock;
+        }
+
+        private TextBlock CreateTextBlock(string text, int fontSize, TextAlignment alignment, StackPanel grid)
+        {
+            TextBlock textBlock = new TextBlock
+            {
+                Text = text,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(5),
+                FontFamily = new FontFamily("Arial"),
+                FontSize = fontSize,
+                TextAlignment = alignment
+            };
+            grid.Children.Add(textBlock);
             return textBlock;
         }
 
@@ -278,7 +274,8 @@ namespace Projektarbete
         private void RemoveProductClick(object sender, RoutedEventArgs e)
         {
             if (cartListBox.SelectedIndex != -1)
-            {;
+            {
+                ;
                 shoppingCart.RemoveAt(cartListBox.SelectedIndex);
                 UpdateShoppingCart();
                 return;
