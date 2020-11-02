@@ -314,7 +314,13 @@ namespace Projektarbete
 
         private void RemoveProductClick(object sender, RoutedEventArgs e)
         {
-            if (cartListBox.SelectedIndex != -1)
+            if (cartListBox.SelectedIndex != -1 && shoppingCart[cartListBox.SelectedIndex].Count > 1)
+            {
+                shoppingCart[cartListBox.SelectedIndex].Count--;
+                UpdateShoppingCart();
+                return;
+            }
+            else if(cartListBox.SelectedIndex != -1 && shoppingCart[cartListBox.SelectedIndex].Count == 1)
             {
                 shoppingCart.RemoveAt(cartListBox.SelectedIndex);
                 UpdateShoppingCart();
