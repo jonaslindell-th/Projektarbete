@@ -27,6 +27,8 @@ namespace Projektarbete
         private ListBox cartListBox;
         private ListBox productListBox;
 
+        ComboBox categoryBox;
+
         private TextBlock sumTextBlock;
         private TextBlock productHeading;
         private TextBlock productDescriptionHeading;
@@ -48,7 +50,7 @@ namespace Projektarbete
         {
             // Window options
             Title = "Butiken";
-            Width = 900;
+            Width = 1100;
             Height = 600;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
@@ -109,7 +111,8 @@ namespace Projektarbete
 
             CreateButton("Använd rabattkod", leftGrid, 2, 2, 1, ValidateCoupon);
             CreateButton("Rensa varukorg", leftGrid, row: 3, column: 0, columnspan: 2, ClearCartClick);
-            CreateButton("Ta bort vald produkt", leftGrid, row: 4, column: 0, columnspan: 2, RemoveProductClick);
+            CreateButton("Ta bort en vald produkt", leftGrid, row: 4, column: 0, columnspan: 1, RemoveProductClick);
+            CreateButton("Ta bort varje vald produkt", leftGrid, 4, 1, 1, RemoveAllProductsClick);
 
             cartListBox = new ListBox
             {
@@ -159,7 +162,7 @@ namespace Projektarbete
             Grid.SetRow(searchBox, 2);
             searchBox.TextChanged += ShowSearch;
 
-            ComboBox categoryBox = new ComboBox
+            categoryBox = new ComboBox
             {
                 Margin = new Thickness(5),
                 BorderThickness = new Thickness(0),
@@ -219,7 +222,33 @@ namespace Projektarbete
 
         private void ShowCategory(object sender, SelectionChangedEventArgs e)
         {
-
+            searchTermList.Clear();
+            if (categoryBox.SelectedIndex != 0 && categoryBox != null)
+            {
+                string category = categoryList[categoryBox.SelectedIndex - 1];
+                var searchTermProducts = productList.Where(product => product.Category.Contains(category));
+                foreach (Product product in searchTermProducts)
+                {
+                    searchTermList.Add(product);
+                }
+                productListBox.Items.Clear();
+                foreach (Product product in searchTermProducts)
+                {
+                    productListBox.Items.Add(product.Title + " (" + product.Price + ") kr");
+                }
+            }
+            else
+            {
+                foreach (Product product in productList)
+                {
+                    searchTermList.Add(product);
+                }
+                productListBox.Items.Clear();
+                foreach (Product product in searchTermList)
+                {
+                    productListBox.Items.Add(product.Title + " (" + product.Price + ") kr");
+                }
+            }
         }
 
         private void ShowSearch(object sender, TextChangedEventArgs e)
@@ -329,6 +358,17 @@ namespace Projektarbete
             MessageBox.Show("Välj en produkt att ta bort");
         }
 
+        private void RemoveAllProductsClick(object sender, RoutedEventArgs e)
+        {
+            if (cartListBox.SelectedIndex != -1)
+            {
+                shoppingCart.RemoveAt(cartListBox.SelectedIndex);
+                UpdateShoppingCart();
+                return;
+            }
+            MessageBox.Show("Välj en produkt att ta bort");
+        }
+
         private void ClearCartClick(object sender, RoutedEventArgs e)
         {
             shoppingCart.Clear();
@@ -376,7 +416,7 @@ namespace Projektarbete
             searchTermList.Clear();
             if (searchTerm != "")
             {
-                var searchTermProducts = productList.Where(product => product.Title.Contains(searchTerm));
+                var searchTermProducts = productList.Where(product => product.Title.ToLower().Contains(searchTerm.ToLower()));
                 foreach (Product product in searchTermProducts)
                 {
                     searchTermList.Add(product);
