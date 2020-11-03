@@ -50,7 +50,7 @@ namespace Projektarbete
         {
             // Window options
             Title = "Butiken";
-            Width = 900;
+            Width = 1100;
             Height = 600;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
@@ -111,7 +111,8 @@ namespace Projektarbete
 
             CreateButton("Använd rabattkod", leftGrid, 2, 2, 1, ValidateCoupon);
             CreateButton("Rensa varukorg", leftGrid, row: 3, column: 0, columnspan: 2, ClearCartClick);
-            CreateButton("Ta bort vald produkt", leftGrid, row: 4, column: 0, columnspan: 2, RemoveProductClick);
+            CreateButton("Ta bort en vald produkt", leftGrid, row: 4, column: 0, columnspan: 1, RemoveProductClick);
+            CreateButton("Ta bort varje vald produkt", leftGrid, 4, 1, 1, RemoveAllProductsClick);
 
             cartListBox = new ListBox
             {
@@ -349,6 +350,17 @@ namespace Projektarbete
                 return;
             }
             else if(cartListBox.SelectedIndex != -1 && shoppingCart[cartListBox.SelectedIndex].Count == 1)
+            {
+                shoppingCart.RemoveAt(cartListBox.SelectedIndex);
+                UpdateShoppingCart();
+                return;
+            }
+            MessageBox.Show("Välj en produkt att ta bort");
+        }
+
+        private void RemoveAllProductsClick(object sender, RoutedEventArgs e)
+        {
+            if (cartListBox.SelectedIndex != -1)
             {
                 shoppingCart.RemoveAt(cartListBox.SelectedIndex);
                 UpdateShoppingCart();
