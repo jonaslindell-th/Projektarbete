@@ -27,6 +27,8 @@ namespace Projektarbete
         private ListBox cartListBox;
         private ListBox productListBox;
 
+        ComboBox categoryBox;
+
         private TextBlock sumTextBlock;
         private TextBlock productHeading;
         private TextBlock productDescriptionHeading;
@@ -159,7 +161,7 @@ namespace Projektarbete
             Grid.SetRow(searchBox, 2);
             searchBox.TextChanged += ShowSearch;
 
-            ComboBox categoryBox = new ComboBox
+            categoryBox = new ComboBox
             {
                 Margin = new Thickness(5),
                 BorderThickness = new Thickness(0),
@@ -219,7 +221,33 @@ namespace Projektarbete
 
         private void ShowCategory(object sender, SelectionChangedEventArgs e)
         {
-
+            searchTermList.Clear();
+            if (categoryBox.SelectedIndex != 0 && categoryBox != null)
+            {
+                string category = categoryList[categoryBox.SelectedIndex - 1];
+                var searchTermProducts = productList.Where(product => product.Category.Contains(category));
+                foreach (Product product in searchTermProducts)
+                {
+                    searchTermList.Add(product);
+                }
+                productListBox.Items.Clear();
+                foreach (Product product in searchTermProducts)
+                {
+                    productListBox.Items.Add(product.Title + " (" + product.Price + ") kr");
+                }
+            }
+            else
+            {
+                foreach (Product product in productList)
+                {
+                    searchTermList.Add(product);
+                }
+                productListBox.Items.Clear();
+                foreach (Product product in searchTermList)
+                {
+                    productListBox.Items.Add(product.Title + " (" + product.Price + ") kr");
+                }
+            }
         }
 
         private void ShowSearch(object sender, TextChangedEventArgs e)
@@ -376,7 +404,7 @@ namespace Projektarbete
             searchTermList.Clear();
             if (searchTerm != "")
             {
-                var searchTermProducts = productList.Where(product => product.Title.Contains(searchTerm));
+                var searchTermProducts = productList.Where(product => product.Title.ToLower().Contains(searchTerm.ToLower()));
                 foreach (Product product in searchTermProducts)
                 {
                     searchTermList.Add(product);
