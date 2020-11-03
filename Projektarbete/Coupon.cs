@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
@@ -42,6 +43,7 @@ namespace Projektarbete
         private static List<Coupon> CouponCodes()
         {
             List<Coupon> coupons = new List<Coupon>();
+            string path = Path.Combine(Environment.CurrentDirectory, @"JSON\Coupon.json");
 
             using (StreamReader reader = new StreamReader(""))
             {
