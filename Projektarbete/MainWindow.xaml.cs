@@ -13,12 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using System.Diagnostics;
 
 namespace Projektarbete
 {
     public partial class MainWindow : Window
     {
-        //private List<Product> productList = Product.DeserializeProducts();
         private List<Product> productList = Product.DeserializeProducts();
         private List<Product> shoppingCart = new List<Product>();
         private List<Product> searchTermList = new List<Product>();
@@ -35,6 +35,7 @@ namespace Projektarbete
         private TextBlock productDescription;
 
         private TextBox searchBox;
+        private TextBox couponBox;
 
         Expander cartExpander;
 
@@ -93,7 +94,7 @@ namespace Projektarbete
             TextBlock cartTextBlock = CreateTextBlock("Varukorg", 18, TextAlignment.Center, expanderCartGrid, 0, 0, 2);
             TextBlock discountTextBlock = CreateTextBlock("Mata in rabattkod nedan", 12, TextAlignment.Center, expanderCartGrid, 1, 0, 2);
 
-            TextBox discountTextBox = new TextBox
+            TextBox couponBox = new TextBox
             {
                 Margin = new Thickness(5),
                 Background = textBoxBrush,
@@ -101,9 +102,9 @@ namespace Projektarbete
                 BorderThickness = new Thickness(0),
                 FontWeight = FontWeights.SemiBold
             };
-            expanderCartGrid.Children.Add(discountTextBox);
-            Grid.SetRow(discountTextBox, 2);
-            Grid.SetColumnSpan(discountTextBox, 1);
+            expanderCartGrid.Children.Add(couponBox);
+            Grid.SetRow(couponBox, 2);
+            Grid.SetColumnSpan(couponBox, 1);
 
             CreateButton("Använd rabattkod", expanderCartGrid, 2, 2, 1, ValidateCoupon);
             CreateButton("Rensa varukorg", expanderCartGrid, row: 3, column: 0, columnspan: 2, ClearCartClick);
@@ -288,7 +289,19 @@ namespace Projektarbete
 
         private void ValidateCoupon(object sender, RoutedEventArgs e)
         {
+            string input = couponBox.Text;
 
+            if(Coupon.IsValid(input) || string.IsNullOrEmpty(input))
+            {
+                Coupon coupon = Coupon.CouponCodes().First(x => x.Code == input);
+                shoppingCart.ForEach(x => x.Price *= 0.5M);
+                UpdateShoppingCart();
+            }
+            else
+            {
+                couponBox.Text = "Test";
+                //Display "Invalid coupon" to user
+            }
         }
 
         private void CreateButton(string content, Grid grid, int row, int column, int columnspan, RoutedEventHandler onClick)
