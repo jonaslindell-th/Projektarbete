@@ -1,32 +1,37 @@
 ﻿[
   {
-    "Title": "Apple Royal Gala",
-    "Description": "About 150grams, produced in Italy",
-    "Price": 25.95,
+    "Title": "Äpple Royal Gala ca 150g",
+    "Description": "Äpple med söt frisk smak och vitt fruktkött. Prova i sallad, kakor, desserter eller ät det precis som det är. Passar som mellis och i utflyktskorgen.",
+    "Price": 4.36,
+    "Category": "Frukt och grönt",
     "ProductImage": "Apple.jpg"
   },
   {
-    "Title": "Banana",
-    "Description": "About 180grams, produced in Costa Rica",
+    "Title": "Banan ca 180g",
+    "Description": "Smart mellanmål som blir sötare ju mognare den är. Annars är bananen också god att tillaga, t ex stekt i smör, sirap och kardemumma med glass till.",
     "Price": 18.95,
-    "ProductImage": "Banana.jpg"
+    "Category": "Frukt och grönt",
+    "ProductImage": "Banan.jpg"
   },
   {
-    "Title": "Pineapple extra sweet",
-    "Description": "About 950grams, produced in Costa Rica",
+    "Title": "Ananas extra sweet ca 950g",
+    "Description": "Ursprungsland: Costa Rica",
     "Price": 23.95,
-    "ProductImage": "Pineapple.jpg"
+    "Category": "Frukt och grönt",
+    "ProductImage": "Ananas.jpg"
   },
   {
-    "Title": "Air dryed ham",
-    "Description": "About 220grams, produced in Spain",
-    "Price": 49.95,
-    "ProductImage": "Ham.jpg"
+    "Title": "Revben",
+    "Description": "ICA Revbensspjäll Tjocka är matiga spjäll som går att koka, grilla eller steka i ugn. Du kan marinera dem upp till ett dygn i kylskåp och sedan ugnssteka på 175 grader i cirka 1-1,5 tim tills innertemperaturen når cirka 85 grader. Du kan också koka dem först, sedan marinera över natten och slutligen ugnssteka dem. En snabbvariant är också att tillaga dem som de är i cirka 1 timme och sen pensla på glaze och in i ugnen igen i cirka 10 min för lite fin yta. Och det viktigaste: köttet kommer från utvalda svenska gårdar.",
+    "Price": 77.95,
+    "Category": "Kött, fågel & fisk",
+    "ProductImage": "Revben.jpg"
   },
   {
     "Title": "Bacon",
-    "Description": "About 125grams, produced in Italy",
-    "Price": 29.95,
+    "Description": "INGREDIENSER: Svenskt sidfläsk (96%), vatten, salt, antioxidationsmedel (E301), konserveringsmedel (E250), rökarom. Bacon är en rå produkt som ska tillagas före användning.",
+    "Price": 14.95,
+    "Category": "Kött, fågel & fisk",
     "ProductImage": "Bacon.jpg"
   }
 ]
