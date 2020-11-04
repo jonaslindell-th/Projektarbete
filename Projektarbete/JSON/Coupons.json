@@ -1,6 +1,10 @@
 [
   {
     "Code": "ABCDE12345",
-    "Discount":  0.7
+    "Discount": 0.7
+  },
+  {
+    "Code": "XYZ321",
+    "Discount": 0.4
   }
 ]
