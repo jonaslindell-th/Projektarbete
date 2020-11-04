@@ -94,7 +94,7 @@ namespace Projektarbete
             TextBlock cartTextBlock = CreateTextBlock("Varukorg", 18, TextAlignment.Center, expanderCartGrid, 0, 0, 2);
             TextBlock discountTextBlock = CreateTextBlock("Mata in rabattkod nedan", 12, TextAlignment.Center, expanderCartGrid, 1, 0, 2);
 
-            TextBox couponBox = new TextBox
+            couponBox = new TextBox
             {
                 Margin = new Thickness(5),
                 Background = textBoxBrush,
@@ -291,7 +291,7 @@ namespace Projektarbete
         {
             string input = couponBox.Text;
 
-            if(Coupon.IsValid(input) || string.IsNullOrEmpty(input))
+            if(Coupon.IsValid(input))
             {
                 Coupon coupon = Coupon.CouponCodes().First(x => x.Code == input);
                 shoppingCart.ForEach(x => x.Price *= 0.5M);
@@ -299,7 +299,6 @@ namespace Projektarbete
             }
             else
             {
-                couponBox.Text = "Test";
                 //Display "Invalid coupon" to user
             }
         }
