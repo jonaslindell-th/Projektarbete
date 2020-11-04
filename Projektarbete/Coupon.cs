@@ -45,7 +45,7 @@ namespace Projektarbete
             List<Coupon> coupons = new List<Coupon>();
             string path = Path.Combine(Environment.CurrentDirectory, @"JSON\Coupon.json");
 
-            using (StreamReader reader = new StreamReader(""))
+            using (StreamReader reader = new StreamReader(path))
             {
                 var json = reader.ReadToEnd();
 
