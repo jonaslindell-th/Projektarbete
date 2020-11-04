@@ -22,7 +22,7 @@ namespace Projektarbete
         private List<Product> productList = Product.DeserializeProducts();
         private List<Product> shoppingCart = new List<Product>();
         private List<Product> searchTermList = new List<Product>();
-        private static List<string> categoryList = new List<string>();
+        private List<string> categoryList = new List<string>();
 
         private ListBox cartListBox;
         private ListBox productListBox;
@@ -189,6 +189,7 @@ namespace Projektarbete
             Grid.SetColumnSpan(categoryBox, 2);
             categoryBox.Items.Add("Välj kategori");
             categoryBox.SelectedIndex = 0;
+            GenerateCategories();
             foreach (string category in categoryList)
             {
                 categoryBox.Items.Add(category);
@@ -471,29 +472,15 @@ namespace Projektarbete
             }
         }
 
-        private static List<Product> GenerateProducts()
+        private void GenerateCategories()
         {
-            List<Product> generateProducts = new List<Product>();
-            var csvFile = File.ReadAllLines("Products.csv", Encoding.GetEncoding("iso-8859-1"));
-
-            foreach (var productLine in csvFile)
+            foreach (var product in productList)
             {
-                string[] productInformation = productLine.Split(";");
-                Product product = new Product
-                {
-                    Title = productInformation[0],
-                    Category = productInformation[1],
-                    Description = productInformation[2],
-                    Price = decimal.Parse(productInformation[3]),
-                    ProductImage = productInformation[4]
-                };
-                generateProducts.Add(product);
                 if (!categoryList.Contains(product.Category))
                 {
                     categoryList.Add(product.Category);
                 }
             }
-            return generateProducts;
         }
     }
 }
