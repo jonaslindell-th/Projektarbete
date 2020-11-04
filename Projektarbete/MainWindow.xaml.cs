@@ -19,7 +19,7 @@ namespace Projektarbete
     public partial class MainWindow : Window
     {
         //private List<Product> productList = Product.DeserializeProducts();
-        private List<Product> productList = GenerateProducts();
+        private List<Product> productList = Product.DeserializeProducts();
         private List<Product> shoppingCart = new List<Product>();
         private List<Product> searchTermList = new List<Product>();
         private static List<string> categoryList = new List<string>();

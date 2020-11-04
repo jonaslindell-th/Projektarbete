@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Text.Json;
+using System.Reflection;
 class Product
 {
     public string Title { get; set; }
@@ -12,19 +13,17 @@ class Product
     public int Count { get; set; }
     public string Category { get; set; }
 
+    public static List<Product> DeserializeProducts()
+    {
+        List<Product> items = new List<Product>();
+        string path = Path.Combine(Environment.CurrentDirectory, @"JSON\Products.json");
+        using (StreamReader reader = new StreamReader(path))
+        {
+            var products = reader.ReadToEnd();
 
-    //public static List<Product> DeserializeProducts()
-    //{
-    //    List<Product> items = new List<Product>();
-    //    string path = "C:/Users/Muste/source/repos/Projektarbete/Projektarbete/Products.json";
-    //    using (StreamReader reader = new StreamReader(path))
-    //    {
-    //        var products = reader.ReadToEnd();
-
-    //        items = JsonSerializer.Deserialize<List<Product>>(products);
-    //        reader.Close();
-    //    }
-
-    //    return items;
-    //}
+            items = JsonSerializer.Deserialize<List<Product>>(products);
+            reader.Close();
+        }
+        return items;
+    }
 }
