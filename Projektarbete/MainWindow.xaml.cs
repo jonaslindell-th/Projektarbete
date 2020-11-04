@@ -41,6 +41,9 @@ namespace Projektarbete
 
         private Image currentImage;
 
+        private bool hasDiscount;
+        private Coupon currentCoupon;
+
         Grid imageGrid;
 
         public MainWindow()
@@ -290,17 +293,37 @@ namespace Projektarbete
         private void ValidateCoupon(object sender, RoutedEventArgs e)
         {
             string input = couponBox.Text;
+            bool validCoupon = Coupon.IsValid(input);
 
-            if(Coupon.IsValid(input))
+            //This will update our coupon if the discount will leave the user with a better price than before
+            if(validCoupon && currentCoupon != null)
             {
-                Coupon coupon = Coupon.CouponCodes().First(x => x.Code == input);
-                shoppingCart.ForEach(x => x.Price *= 0.5M);
-                UpdateShoppingCart();
+                Coupon compare = Coupon.CouponCodes().First(x => x.Code == input);
+                if(compare.Discount < currentCoupon.Discount)
+                {
+                    //Reset the price to its original, non discounted price so we can recalculate it with the new discount
+                    shoppingCart.ForEach(x => x.Price /= currentCoupon.Discount);
+                    currentCoupon = compare;
+                }
+                else
+                {
+                    MessageBox.Show("Din nuvarande rabattkod har en bättre rabatt än den du nyligen matade in!");
+                }
+
             }
-            else
+
+            currentCoupon = validCoupon ? Coupon.CouponCodes().First(x => x.Code == input) : null;
+
+            if(currentCoupon != null && !hasDiscount)
             {
-                //Display "Invalid coupon" to user
+                shoppingCart.ForEach(x => x.Price *= currentCoupon.Discount);
+                hasDiscount = true;
             }
+            else if(currentCoupon == null)
+            {
+                MessageBox.Show("Den inmatade rabattkoden är ej giltig, försök igen.");
+            }
+            UpdateShoppingCart();
         }
 
         private void CreateButton(string content, Grid grid, int row, int column, int columnspan, RoutedEventHandler onClick)
