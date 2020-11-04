@@ -21,12 +21,14 @@ namespace Projektarbete
             return CouponCodes().Any(x => x.Code == code);
         }
 
+        //We'll use this to generate a coupon for the user (After they input the discount percentage)
         public static Coupon GenerateCoupon(int discount)
         {
             string code = string.Empty;
             string chars = "ABCDEFGHIJKLMNOPQRSTUVXYZ123456789";
             Random r = new Random();
 
+            //generate an uppercase alphanumeric code of length 10 that'll be useable as a coupon code
             for(int i = 0; i < 10; i++)
             {
                 int random = r.Next(0, chars.Length - 1);
@@ -36,14 +38,14 @@ namespace Projektarbete
             return new Coupon()
             {
                 Code = code,
-                Discount = (decimal)discount / 100
+                Discount = 1 - ((decimal)discount / 100) //discount is an int so the user can input "70" for 70% (more user friendly than inputting 0.7)
             };
         }
 
-        private static List<Coupon> CouponCodes()
+        public static List<Coupon> CouponCodes()
         {
             List<Coupon> coupons = new List<Coupon>();
-            string path = Path.Combine(Environment.CurrentDirectory, @"JSON\Coupon.json");
+            string path = Path.Combine(Environment.CurrentDirectory, @"JSON\Coupons.json");
 
             using (StreamReader reader = new StreamReader(path))
             {
