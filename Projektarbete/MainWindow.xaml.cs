@@ -335,8 +335,6 @@ namespace Projektarbete
                 Coupon compare = Coupon.CouponCodes().First(x => x.Code == input);
                 if(compare.Discount < currentCoupon.Discount)
                 {
-                    //Reset the price to its original, non discounted price so we can recalculate it with the new discount
-                    //shoppingCart.ForEach(x => x.Price /= currentCoupon.Discount);
                     currentCoupon = compare;
                 }
                 else
@@ -350,7 +348,6 @@ namespace Projektarbete
 
             if(currentCoupon != null && !hasDiscount)
             {
-                //shoppingCart.ForEach(x => x.Price *= currentCoupon.Discount);
                 hasDiscount = true;
             }
             else if(currentCoupon == null)
