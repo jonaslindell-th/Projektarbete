@@ -23,11 +23,13 @@ namespace Projektarbete
         private List<Product> shoppingCart = new List<Product>();
         private List<Product> searchTermList = new List<Product>();
         private List<string> categoryList = new List<string>();
+        private List<Coupon> couponList = Coupon.CouponCodes();
 
         private ListBox cartListBox;
         private ListBox productListBox;
 
         ComboBox categoryBox;
+        ComboBox couponComboBox;
 
         private TextBlock sumTextBlock;
         private TextBlock productHeading;
@@ -35,7 +37,7 @@ namespace Projektarbete
         private TextBlock productDescription;
 
         private TextBox searchBox;
-        private TextBox couponBox;
+        private TextBox couponTextBox;
 
         Expander cartExpander;
 
@@ -95,9 +97,29 @@ namespace Projektarbete
             expanderCartGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
             TextBlock cartTextBlock = CreateTextBlock("Varukorg", 18, TextAlignment.Center, expanderCartGrid, 0, 0, 2);
-            TextBlock discountTextBlock = CreateTextBlock("Mata in rabattkod nedan", 12, TextAlignment.Center, expanderCartGrid, 1, 0, 2);
+            TextBlock discountTextBlock = CreateTextBlock("Mata in rabattkod nedan", 12, TextAlignment.Center, expanderCartGrid, 1, 0, 1);
 
-            couponBox = new TextBox
+            couponComboBox = new ComboBox
+            {
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Height = 18,
+                Margin = new Thickness(0, 5, 5, 5),
+                BorderThickness = new Thickness(0),
+                VerticalContentAlignment = VerticalAlignment.Top,
+                Padding = new Thickness(5, 1, 5, 0),
+            };
+            expanderCartGrid.Children.Add(couponComboBox);
+            Grid.SetRow(couponComboBox, 1);
+            Grid.SetColumn(couponComboBox, 1);
+            couponComboBox.Items.Add("Dina rabattkoder");
+            couponComboBox.SelectedIndex = 0;
+            couponComboBox.SelectionChanged += AddToCouponTextBox;
+            foreach (var coupon in couponList)
+            {
+                couponComboBox.Items.Add(coupon.Code + " " +  (100 - Math.Round(coupon.Discount * 100, 0)) + "%");
+            }
+
+            couponTextBox = new TextBox
             {
                 Margin = new Thickness(5),
                 Background = textBoxBrush,
@@ -105,9 +127,9 @@ namespace Projektarbete
                 BorderThickness = new Thickness(0),
                 FontWeight = FontWeights.SemiBold
             };
-            expanderCartGrid.Children.Add(couponBox);
-            Grid.SetRow(couponBox, 2);
-            Grid.SetColumnSpan(couponBox, 1);
+            expanderCartGrid.Children.Add(couponTextBox);
+            Grid.SetRow(couponTextBox, 2);
+            Grid.SetColumnSpan(couponTextBox, 1);
 
             CreateButton("Använd rabattkod", expanderCartGrid, 2, 2, 1, ValidateCoupon);
             CreateButton("Rensa varukorg", expanderCartGrid, row: 3, column: 0, columnspan: 2, ClearCartClick);
@@ -243,6 +265,18 @@ namespace Projektarbete
             // ##### End of right StackPanel definition ####
         }
 
+        private void AddToCouponTextBox(object sender, SelectionChangedEventArgs e)
+        {
+            if (couponComboBox.SelectedIndex != 0)
+            {
+                couponTextBox.Text = couponList[couponComboBox.SelectedIndex - 1].Code;
+            }
+            else
+            {
+                couponTextBox.Text = "";
+            }
+        }
+
         private void IncreaseCartRowSpan(object sender, RoutedEventArgs e)
         {
             Grid.SetColumnSpan(cartExpander, 2);
@@ -292,7 +326,7 @@ namespace Projektarbete
 
         private void ValidateCoupon(object sender, RoutedEventArgs e)
         {
-            string input = couponBox.Text;
+            string input = couponTextBox.Text;
             bool validCoupon = Coupon.IsValid(input);
 
             //This will update our coupon if the discount will leave the user with a better price than before
