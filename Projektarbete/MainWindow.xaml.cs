@@ -336,7 +336,7 @@ namespace Projektarbete
                 if(compare.Discount < currentCoupon.Discount)
                 {
                     //Reset the price to its original, non discounted price so we can recalculate it with the new discount
-                    shoppingCart.ForEach(x => x.Price /= currentCoupon.Discount);
+                    //shoppingCart.ForEach(x => x.Price /= currentCoupon.Discount);
                     currentCoupon = compare;
                 }
                 else
@@ -350,7 +350,7 @@ namespace Projektarbete
 
             if(currentCoupon != null && !hasDiscount)
             {
-                shoppingCart.ForEach(x => x.Price *= currentCoupon.Discount);
+                //shoppingCart.ForEach(x => x.Price *= currentCoupon.Discount);
                 hasDiscount = true;
             }
             else if(currentCoupon == null)
@@ -507,6 +507,9 @@ namespace Projektarbete
             {
                 sum += product.Price * product.Count;
             }
+
+            if (hasDiscount) sum *= currentCoupon.Discount;
+
             sumTextBlock.Text = "Varukorgens summa: " + (Convert.ToString(Math.Round(sum, 1))) + " kr";
             cartExpander.Header = "Din varukorg " + (Convert.ToString(Math.Round(sum, 1))) + " kr";
         }
