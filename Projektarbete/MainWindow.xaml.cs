@@ -29,7 +29,7 @@ namespace Projektarbete
         }
 
         private List<Product> productList = Product.DeserializeProducts(@"JSON\Products.json");
-        private List<Product> shoppingCart = new List<Product>();
+        private List<Product> shoppingCart = LoadCart();
         private List<Product> searchTermList = new List<Product>();
         private List<string> categoryList = new List<string>();
         private List<Coupon> couponList = Coupon.CouponCodes();
@@ -65,7 +65,6 @@ namespace Projektarbete
 
         private void Start()
         {
-            //shoppingCart = Product.DeserializeProducts(@"JSON\Cart.json");
             // Window options
             Title = "Butiken";
             Width = 800;
@@ -275,11 +274,18 @@ namespace Projektarbete
             productDescription.FontWeight = FontWeights.Thin;
             productDescription.Margin = new Thickness(30, 5, 30, 5);
             // ##### End of right StackPanel definition ####
+            UpdateShoppingCart();
         }
 
         private void SaveCartClick(object sender, RoutedEventArgs e)
         {
-            SaveCart();
+            var json = JsonSerializer.Serialize(shoppingCart,
+                new JsonSerializerOptions()
+                {
+                    WriteIndented = true
+                });
+            string path = GetFilePath("Cart.json");
+            File.WriteAllText(path, json);
         }
 
         private void ShowReceipt(object sender, RoutedEventArgs e)// displays a receipt Datagrid in the right StackPanel
@@ -645,15 +651,14 @@ namespace Projektarbete
             }
         }
 
-        private void SaveCart()
+        private static List<Product> LoadCart()
         {
-            var json = JsonSerializer.Serialize(shoppingCart, 
-                new JsonSerializerOptions()
-                { 
-                    WriteIndented = true
-                });
-            string path = GetFilePath("Cart.json");
-            File.WriteAllText(path, json);
+            try
+            {
+                List<Product> items = Product.DeserializeProducts(GetFilePath("Cart.json"));
+                return items;
+            }
+            catch(JsonException) { return new List<Product>(); }
         }
     }
 }
