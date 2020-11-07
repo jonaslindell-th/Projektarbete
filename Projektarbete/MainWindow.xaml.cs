@@ -23,6 +23,11 @@ namespace Projektarbete
 {
     public partial class MainWindow : Window
     {
+        public static string GetFilePath(string fileName)
+        {
+            return $@"C:\Windows\Temp\{fileName}";
+        }
+
         private List<Product> productList = Product.DeserializeProducts(@"JSON\Products.json");
         private List<Product> shoppingCart = new List<Product>();
         private List<Product> searchTermList = new List<Product>();
@@ -274,7 +279,7 @@ namespace Projektarbete
 
         private void SaveCartClick(object sender, RoutedEventArgs e)
         {
-            // save the cart using streamwriter to the Tempfolder
+            SaveCart();
         }
 
         private void ShowReceipt(object sender, RoutedEventArgs e)// displays a receipt Datagrid in the right StackPanel
@@ -647,7 +652,7 @@ namespace Projektarbete
                 { 
                     WriteIndented = true
                 });
-            string path = System.IO.Path.Combine(Environment.CurrentDirectory, @"JSON\Cart.json");
+            string path = GetFilePath("Cart.json");
             File.WriteAllText(path, json);
         }
     }
