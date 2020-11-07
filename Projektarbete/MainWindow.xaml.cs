@@ -420,8 +420,6 @@ namespace Projektarbete
                 Coupon compare = Coupon.CouponCodes().First(x => x.Code == input);
                 if(compare.Discount < currentCoupon.Discount)
                 {
-                    //Reset the price to its original, non discounted price so we can recalculate it with the new discount
-                    //shoppingCart.ForEach(x => x.Price /= currentCoupon.Discount);
                     currentCoupon = compare;
                 }
                 else
@@ -433,14 +431,12 @@ namespace Projektarbete
 
             currentCoupon = validCoupon ? Coupon.CouponCodes().First(x => x.Code == input) : null;
 
-            if(currentCoupon != null && !hasDiscount)
-            {
-                //shoppingCart.ForEach(x => x.Price *= currentCoupon.Discount);
-                hasDiscount = true;
-            }
-            else if(currentCoupon == null)
+            hasDiscount = currentCoupon != null;
+
+            if(currentCoupon == null)
             {
                 MessageBox.Show("Den inmatade rabattkoden är ej giltig, försök igen.");
+                return;
             }
             UpdateShoppingCart();
         }
@@ -638,6 +634,17 @@ namespace Projektarbete
                     categoryList.Add(product.Category);
                 }
             }
+        }
+
+        private void OnPaymentClick(object sender, RoutedEventArgs e)
+        {
+            decimal sum = shoppingCart.Sum(x => x.Price);
+            decimal saved = sum - (sum * (currentCoupon != null ? currentCoupon.Discount : 0));
+
+            string items = string.Join("\n", shoppingCart.Select(x => $"{x.Count}x {x.Title} {x.Price * x.Count}"));
+            string payment = $"Du betalade: {sum}:- " + currentCoupon != null ? $"och sparade: {saved}:-" : "";
+
+            MessageBox.Show($"{items}\n{payment}");
         }
     }
 }
