@@ -642,7 +642,7 @@ namespace Projektarbete
 
         private void SaveCart()
         {
-            var json = JsonSerializer.Serialize(shoppingCart, typeof(Product), 
+            var json = JsonSerializer.Serialize(shoppingCart, 
                 new JsonSerializerOptions()
                 { 
                     WriteIndented = true
