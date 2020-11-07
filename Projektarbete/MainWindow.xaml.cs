@@ -60,6 +60,7 @@ namespace Projektarbete
 
         private void Start()
         {
+            //shoppingCart = Product.DeserializeProducts(@"JSON\Cart.json");
             // Window options
             Title = "Butiken";
             Width = 800;
