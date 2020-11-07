@@ -14,12 +14,15 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
 using System.Diagnostics;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Xml;
 
 namespace Projektarbete
 {
     public partial class MainWindow : Window
     {
-        private List<Product> productList = Product.DeserializeProducts();
+        private List<Product> productList = Product.DeserializeProducts(@"JSON\Products.json");
         private List<Product> shoppingCart = new List<Product>();
         private List<Product> searchTermList = new List<Product>();
         private List<string> categoryList = new List<string>();
@@ -551,15 +554,15 @@ namespace Projektarbete
             }
         }
 
-        private void OnPaymentClick(object sender, RoutedEventArgs e)
+        private void SaveCart()
         {
-            decimal sum = shoppingCart.Sum(x => x.Price);
-            decimal saved = sum - (sum * (currentCoupon != null ? currentCoupon.Discount : 0));
-
-            string items = string.Join("\n", shoppingCart.Select(x => $"{x.Count}x {x.Title} {x.Price * x.Count}"));
-            string payment = $"Du betalade: {sum}:- " + currentCoupon != null ? $"och sparade: {saved}:-" : "";
-
-            MessageBox.Show($"{items}\n{payment}");
+            var json = JsonSerializer.Serialize(shoppingCart, typeof(Product), 
+                new JsonSerializerOptions()
+                { 
+                    WriteIndented = true
+                });
+            string path = System.IO.Path.Combine(Environment.CurrentDirectory, @"JSON\Cart.json");
+            File.WriteAllText(path, json);
         }
     }
 }
