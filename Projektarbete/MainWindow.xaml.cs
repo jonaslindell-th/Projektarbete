@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
 using System.Diagnostics;
+using System.Data;
 
 namespace Projektarbete
 {
@@ -132,7 +133,8 @@ namespace Projektarbete
             Grid.SetColumnSpan(couponTextBox, 1);
 
             CreateButton("Använd rabattkod", expanderCartGrid, 2, 2, 1, ValidateCoupon);
-            CreateButton("Rensa varukorg", expanderCartGrid, row: 3, column: 0, columnspan: 2, ClearCartClick);
+            CreateButton("Rensa varukorg", expanderCartGrid, row: 3, column: 0, columnspan: 1, ClearCartClick);
+            CreateButton("Spara varukorg", expanderCartGrid, 3, 1, 1, SaveCartClick);
             CreateButton("Ta bort en vald produkt", expanderCartGrid, row: 4, column: 0, columnspan: 1, RemoveProductClick);
             CreateButton("Ta bort varje vald produkt", expanderCartGrid, 4, 1, 1, RemoveAllProductsClick);
 
@@ -152,7 +154,9 @@ namespace Projektarbete
             Grid.SetRow(cartListBox, 5);
             Grid.SetColumnSpan(cartListBox, 2);
 
-            sumTextBlock = CreateTextBlock("Varukorgens summa: 0 kr", 12, TextAlignment.Left, expanderCartGrid, 6, 0, 2);
+            sumTextBlock = CreateTextBlock("Varukorgens summa: 0 kr", 12, TextAlignment.Left, expanderCartGrid, 6, 0, 1);
+
+            CreateButton("Till kassan", expanderCartGrid, 6, 1, 1, ShowReceipt);
 
             // #### End of expanderCartGrid definition ####
 
@@ -173,7 +177,7 @@ namespace Projektarbete
 
             cartExpander = new Expander
             {
-                Content = expanderCartGrid,
+                Content = expanderCartGrid,// sets the expanders content to the expanderCartGrid defined above
                 Header = "Din varukorg 0 kr",
                 FontWeight = FontWeights.SemiBold,
                 Foreground = Brushes.White,
@@ -186,7 +190,6 @@ namespace Projektarbete
             cartExpander.Expanded += IncreaseCartRowSpan;
 
             TextBlock products = CreateTextBlock("Produkter", 18, TextAlignment.Center, leftGrid, 1, 0, 2);
-
             TextBlock searchHeading = CreateTextBlock("Sök efter produkt", 12, TextAlignment.Center, leftGrid, 2, 0, 2);
 
             searchBox = new TextBox
@@ -259,16 +262,98 @@ namespace Projektarbete
             imageGrid.Children.Add(currentImage);
 
             productDescriptionHeading = CreateTextBlock("", 16, TextAlignment.Center, rightStackPanel);
-            productDescription = CreateTextBlock("", 12, TextAlignment.Left, rightStackPanel);
+            productDescription = CreateTextBlock("", 12, TextAlignment.Center, rightStackPanel);
             productDescription.FontWeight = FontWeights.Thin;
             productDescription.Margin = new Thickness(30, 5, 30, 5);
             // ##### End of right StackPanel definition ####
+        }
+
+        private void SaveCartClick(object sender, RoutedEventArgs e)
+        {
+            // save the cart using streamwriter to the Tempfolder
+        }
+
+        private void ShowReceipt(object sender, RoutedEventArgs e)// displays a receipt Datagrid in the right StackPanel
+        {
+            productHeading.Text = "Ditt kvitto";
+            productDescriptionHeading.Text = "Ditt köp har genomförts";
+            productDescription.Text = "Tack för att du handlar hos oss!";
+
+            imageGrid.Children.Clear();// without clearing the imageGrid a picture would still be visible behind the datagrid
+
+            decimal sum = 0;
+
+            DataGrid receiptDataGrid = new DataGrid 
+            {
+                Margin = new Thickness(5), 
+                MaxWidth = 450, MinHeight = 300, 
+                MaxHeight = 300, 
+                BorderThickness = new Thickness(0) 
+            };
+            receiptDataGrid.IsReadOnly = true;// prevents the user from altering the receipt
+
+            DataTable receiptTable = new DataTable();
+            // add columns for the receipt datatable
+            receiptTable.Columns.Add(new DataColumn("Produkt", typeof(string)));
+            receiptTable.Columns.Add(new DataColumn("Antal", typeof(int)));
+            receiptTable.Columns.Add(new DataColumn("aPris", typeof(decimal)));
+            receiptTable.Columns.Add(new DataColumn("Rabatt", typeof(decimal)));
+            receiptTable.Columns.Add(new DataColumn("Summa", typeof(decimal)));
+
+            //if a discount code has been validated the loop will add a product to a new row for each product in the shoppingCart list displaying the total discount for each product and summarize the total discount and price
+            if (hasDiscount)
+            {
+                foreach (var product in shoppingCart)
+                {
+                    decimal discount = product.Price - (product.Price * currentCoupon.Discount);
+
+                    receiptTable.Rows.Add(new object[]
+                    {
+                    product.Title,
+                    product.Count,
+                    product.Price,
+                    Math.Round(-discount*product.Count, 2),
+                    Math.Round(product.Price*product.Count*currentCoupon.Discount, 2)
+                    });
+                    sum += product.Price*product.Count;
+                }
+                receiptTable.Rows.Add(new object[] { "Totalt", null, null, Math.Round(-(sum - (sum*currentCoupon.Discount)), 2), Math.Round((sum * currentCoupon.Discount), 2) });// adds a last row containing total discount and total price with discount
+            }
+            //if no discount has been validated, the else statement set the discount values to null and present the products by adding a new row foreach product in the shoppingCart list
+            else
+            {
+                foreach (var product in shoppingCart)
+                {
+                    receiptTable.Rows.Add(new object[]
+                    {
+                    product.Title,
+                    product.Count,
+                    product.Price,
+                    null,
+                    Math.Round(product.Price*product.Count, 2)
+                    });
+                    sum += product.Price*product.Count;
+                }
+                receiptTable.Rows.Add(new object[] { "Totalt", null, null, null, Math.Round(sum, 2) });// adds a last row containing the total price
+            }
+            receiptDataGrid.ItemsSource = receiptTable.DefaultView;// sets the datagrids content to the datatable containing the products
+            imageGrid.Children.Add(receiptDataGrid);// displays the datagrid in the imageGrid in the StackPanel
+            Grid.SetRow(receiptDataGrid, 0);
+            Grid.SetColumn(receiptDataGrid, 0);
+
+            // reset the shopping cart
+            shoppingCart.Clear();
+            currentCoupon = null;
+            hasDiscount = false;
+            couponComboBox.SelectedIndex = 0;
+            UpdateShoppingCart();
         }
 
         private void AddToCouponTextBox(object sender, SelectionChangedEventArgs e)
         {
             if (couponComboBox.SelectedIndex != 0)
             {
+                // using selectedindex - 1 since there is a default item "Dina rabattkoder" added at index 0 
                 couponTextBox.Text = couponList[couponComboBox.SelectedIndex - 1].Code;
             }
             else
