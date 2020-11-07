@@ -15,10 +15,10 @@ class Product
     public int Count { get; set; }
     public string Category { get; set; }
 
-    public static List<Product> DeserializeProducts()
+    public static List<Product> DeserializeProducts(string fullPath)
     {
         List<Product> items = new List<Product>();
-        string path = Path.Combine(Environment.CurrentDirectory, @"JSON\Products.json");
+        string path = Path.Combine(Environment.CurrentDirectory, fullPath);
         using (StreamReader reader = new StreamReader(path))
         {
             var products = reader.ReadToEnd();
