@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 
 namespace Projektarbete
 {
-    class Coupon
+    public class Coupon
     {
         public string Code { get; set; }
         public decimal Discount { get; set; }
