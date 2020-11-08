@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using System.Reflection;
-using System.Linq;
-
 namespace Projektarbete
 {
     public class Product
@@ -17,6 +12,11 @@ namespace Projektarbete
         public int Count { get; set; }
         public string Category { get; set; }
 
+
+        public static string GetFilePath(string fileName)
+        {
+            return $@"C:\Windows\Temp\{fileName}";
+        }
         public static List<Product> DeserializeProducts(string path)
         {
             if (!File.Exists(path)) File.Create(path).Close();
@@ -30,6 +30,27 @@ namespace Projektarbete
                 reader.Close();
             }
             return items;
+        }
+
+        public static void SaveCart(List<Product> cart)
+        {
+            var json = JsonSerializer.Serialize(cart,
+                new JsonSerializerOptions()
+                {
+                    WriteIndented = true
+                });
+            string path = GetFilePath("Cart.json");
+            File.WriteAllText(path, json);
+        }
+
+        public static List<Product> LoadCart()
+        {
+            try
+            {
+                List<Product> items = Product.DeserializeProducts(GetFilePath("Cart.json"));
+                return items;
+            }
+            catch (JsonException) { return new List<Product>(); }
         }
     }
 }
