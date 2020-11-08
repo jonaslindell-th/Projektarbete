@@ -48,11 +48,25 @@ namespace Projektarbete
 
         private void Start()
         {
-            // Window options
+            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
+            #region Custom brushes
+            // declare a brushconverter to convert a hex color code string to a Brush color
+            BrushConverter brushConverter = new System.Windows.Media.BrushConverter();
+            Brush backgroundBrush = (Brush)brushConverter.ConvertFromString("#2F3136");
+            Brush listBoxBrush = (Brush)brushConverter.ConvertFromString("#36393F");
+            Brush textBoxBrush = (Brush)brushConverter.ConvertFromString("#40444B");
+            Brush expanderBrush = (Brush)brushConverter.ConvertFromString("#202225");
+            #endregion
+            
+            // Set Window properties
             Title = "Butiken";
             Width = 800;
             Height = 600;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            // Changes the Window icon
+            Uri iconUri = new Uri("Images/Ica.png", UriKind.RelativeOrAbsolute);
+            this.Icon = BitmapFrame.Create(iconUri);
 
             // Scrolling
             ScrollViewer root = new ScrollViewer();
@@ -63,20 +77,13 @@ namespace Projektarbete
             Grid mainGrid = new Grid();
             root.Content = mainGrid;
             mainGrid.RowDefinitions.Add(new RowDefinition());
-            mainGrid.ColumnDefinitions.Add(new ColumnDefinition());// First column contains the shoppingcart grid inside an expander on the first row, the remaining rows displays all available products in a listbox with related TextBlock and add to cart button
-            mainGrid.ColumnDefinitions.Add(new ColumnDefinition());// The second column contains the StackPanel which displays the current selected product image, description and heading using SelectionChanged from the ListBox in the first grid
-            Uri iconUri = new Uri("Images/Ica.png", UriKind.RelativeOrAbsolute);
-            this.Icon = BitmapFrame.Create(iconUri);// Changes the window icon
-
-            // #### custom brushes ####
-            var brushConverter = new System.Windows.Media.BrushConverter();
-            var backgroundBrush = (Brush)brushConverter.ConvertFromString("#2F3136");
+            mainGrid.ColumnDefinitions.Add(new ColumnDefinition());// First column contains the shoppingcart and product assortment.
+            mainGrid.ColumnDefinitions.Add(new ColumnDefinition());// The second column displays the selected product and upon payment displays a receipt
             mainGrid.Background = backgroundBrush;
-            var listBoxBrush = (Brush)brushConverter.ConvertFromString("#36393F");
-            var textBoxBrush = (Brush)brushConverter.ConvertFromString("#40444B");
-            var expanderBrush = (Brush)brushConverter.ConvertFromString("#202225");
 
-            // ##### expanderCartGrid definition #####
+
+
+            #region grid definiton for the Expander in leftGrid
             Grid expanderCartGrid = new Grid();
             expanderCartGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             expanderCartGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -91,6 +98,7 @@ namespace Projektarbete
             TextBlock cartTextBlock = CreateTextBlock("Varukorg", 18, TextAlignment.Center, expanderCartGrid, 0, 0, 2);
             TextBlock discountTextBlock = CreateTextBlock("Mata in rabattkod nedan", 12, TextAlignment.Center, expanderCartGrid, 1, 0, 1);
 
+            // A combobox to display available coupons to the user
             couponComboBox = new ComboBox
             {
                 HorizontalAlignment = HorizontalAlignment.Right,
@@ -103,14 +111,16 @@ namespace Projektarbete
             expanderCartGrid.Children.Add(couponComboBox);
             Grid.SetRow(couponComboBox, 1);
             Grid.SetColumn(couponComboBox, 1);
-            couponComboBox.Items.Add("Dina rabattkoder");
+            couponComboBox.Items.Add("Dina rabattkoder");// add a default index at 0, can be selected to clear the couponTextBox.Text
             couponComboBox.SelectedIndex = 0;
             couponComboBox.SelectionChanged += AddToCouponTextBox;
+            // Adds all available coupons to the couponComboBox items from the couponList which recieves predetermined coupons from file
             foreach (var coupon in couponList)
             {
                 couponComboBox.Items.Add(coupon.Code + " " +  (100 - Math.Round(coupon.Discount * 100, 0)) + "%");
             }
 
+            // A textbox for the user to enter coupon codes
             couponTextBox = new TextBox
             {
                 Margin = new Thickness(5),
@@ -127,8 +137,9 @@ namespace Projektarbete
             CreateButton("Rensa varukorg", expanderCartGrid, row: 3, column: 0, columnspan: 1, ClearCartClick);
             CreateButton("Spara varukorg", expanderCartGrid, 3, 1, 1, SaveCartClick);
             CreateButton("Ta bort en vald produkt", expanderCartGrid, row: 4, column: 0, columnspan: 1, RemoveProductClick);
-            CreateButton("Ta bort varje vald produkt", expanderCartGrid, 4, 1, 1, RemoveAllProductsClick);
+            CreateButton("Ta bort varje vald produkt", expanderCartGrid, 4, 1, 1, RemoveAllSelectedProductsClick);
 
+            // the cartListBox display all products in the shoppingCartList
             cartListBox = new ListBox
             {
                 Margin = new Thickness(5),
@@ -149,9 +160,9 @@ namespace Projektarbete
 
             CreateButton("Till kassan", expanderCartGrid, 6, 1, 1, ShowReceipt);
 
-            // #### End of expanderCartGrid definition ####
+            #endregion
 
-            // ##### left Grid definition ####
+            #region leftGrid definition
             Grid leftGrid = new Grid();
             mainGrid.Children.Add(leftGrid);
             leftGrid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -166,6 +177,7 @@ namespace Projektarbete
             Grid.SetRow(leftGrid, 0);
             Grid.SetColumn(leftGrid, 0);
 
+            // Expander definition, when expanded the expanderCartGrid will be displayed in the leftGrid
             cartExpander = new Expander
             {
                 Content = expanderCartGrid,// sets the expanders content to the expanderCartGrid defined above
@@ -177,12 +189,14 @@ namespace Projektarbete
             leftGrid.Children.Add(cartExpander);
             Grid.SetRow(cartExpander, 0);
             Grid.SetColumn(cartExpander, 0);
-            cartExpander.Collapsed += DecreaseCartRowSpan;
-            cartExpander.Expanded += IncreaseCartRowSpan;
+            // when expanded the cartExpander's columnspan increases to take up two columns and when collapsed shrinks to one column
+            cartExpander.Collapsed += DecreaseCartColumnSpan;
+            cartExpander.Expanded += IncreaseCartColumnSpan;
 
             TextBlock products = CreateTextBlock("Produkter", 18, TextAlignment.Center, leftGrid, 1, 0, 2);
             TextBlock searchHeading = CreateTextBlock("Sök efter produkt", 12, TextAlignment.Center, leftGrid, 2, 0, 2);
 
+            // A textbox definition where the user can input a search term
             searchBox = new TextBox
             {
                 Margin = new Thickness(5),
@@ -194,8 +208,10 @@ namespace Projektarbete
             leftGrid.Children.Add(searchBox);
             Grid.SetRow(searchBox, 3);
             Grid.SetColumnSpan(searchBox, 2);
+            // when the searchbox text changes the ShowSearch event will run
             searchBox.TextChanged += ShowSearch;
 
+            // A combobox which displays available categories
             categoryBox = new ComboBox
             {
                 Margin = new Thickness(5),
@@ -210,6 +226,7 @@ namespace Projektarbete
             categoryBox.Items.Add("Välj kategori");
             categoryBox.SelectedIndex = 0;
             GenerateCategories();
+            // add categories to the categoryBox
             foreach (string category in categoryList)
             {
                 categoryBox.Items.Add(category);
@@ -218,6 +235,7 @@ namespace Projektarbete
 
             CreateButton("Lägg till vald produkt", leftGrid, row:5, column:0, columnspan:2, AddProductToCart);
 
+            // Listbox definition, used to display the product assortment from the searchTermList
             productListBox = new ListBox
             {
                 Margin = new Thickness(5),
@@ -233,11 +251,11 @@ namespace Projektarbete
             Grid.SetRow(productListBox, 6);
             Grid.SetColumn(productListBox, 0);
             Grid.SetColumnSpan(productListBox, 2);
-            UpdateProductListBox("");
-            productListBox.SelectionChanged += DisplaySelectedProduct;
-            // #### End of left Grid definition ####
+            UpdateProductListBox("");// set the searchTerm to empty string in order to add every product from the productList upon start
+            productListBox.SelectionChanged += DisplaySelectedProduct;// selecting an item in the listbox will display productinformation in the stackpanel to the right
+            #endregion
 
-            // ##### Right StackPanel definition ####
+            #region rightStackPanel definition
             StackPanel rightStackPanel = new StackPanel();
             mainGrid.Children.Add(rightStackPanel);
             Grid.SetRow(rightStackPanel, 0);
@@ -257,7 +275,8 @@ namespace Projektarbete
             productDescription.FontWeight = FontWeights.Thin;
             productDescription.Margin = new Thickness(30, 5, 30, 5);
             // ##### End of right StackPanel definition ####
-            UpdateShoppingCart();
+            UpdateCartListBox();
+            #endregion
         }
 
         private void SaveCartClick(object sender, RoutedEventArgs e)
@@ -275,6 +294,7 @@ namespace Projektarbete
 
             decimal sum = 0;
 
+            // DataGrid definition
             DataGrid receiptDataGrid = new DataGrid 
             {
                 Margin = new Thickness(5), 
@@ -284,6 +304,7 @@ namespace Projektarbete
             };
             receiptDataGrid.IsReadOnly = true;// prevents the user from altering the receipt
 
+            // DataTable definition, which is the DataGrid's itemsource
             DataTable receiptTable = new DataTable();
             // add columns for the receipt datatable
             receiptTable.Columns.Add(new DataColumn("Produkt", typeof(string)));
@@ -338,7 +359,7 @@ namespace Projektarbete
             currentCoupon = null;
             hasDiscount = false;
             couponComboBox.SelectedIndex = 0;
-            UpdateShoppingCart();
+            UpdateCartListBox();
         }
 
         private void AddToCouponTextBox(object sender, SelectionChangedEventArgs e)
@@ -354,12 +375,22 @@ namespace Projektarbete
             }
         }
 
-        private void IncreaseCartRowSpan(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Increases the cartExpander's columnspan to take up two columns
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void IncreaseCartColumnSpan(object sender, RoutedEventArgs e)
         {
             Grid.SetColumnSpan(cartExpander, 2);
         }
 
-        private void DecreaseCartRowSpan(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Decreases the cartExpander's columnspan to take up one column
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DecreaseCartColumnSpan(object sender, RoutedEventArgs e)
         {
             Grid.SetColumnSpan(cartExpander, 1);
         }
@@ -430,7 +461,7 @@ namespace Projektarbete
                 MessageBox.Show("Den inmatade rabattkoden är ej giltig, försök igen.");
                 return;
             }
-            UpdateShoppingCart();
+            UpdateCartListBox();
         }
 
         private void CreateButton(string content, Grid grid, int row, int column, int columnspan, RoutedEventHandler onClick)
@@ -513,44 +544,66 @@ namespace Projektarbete
             return image;
         }
 
+        /// <summary>
+        /// Subtracts one from the product count, if the count is 1 the product is removed from the shoppingCart
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RemoveProductClick(object sender, RoutedEventArgs e)
         {
             if (cartListBox.SelectedIndex != -1 && shoppingCart[cartListBox.SelectedIndex].Count > 1)
             {
                 shoppingCart[cartListBox.SelectedIndex].Count--;
-                UpdateShoppingCart();
+                UpdateCartListBox();
                 return;
             }
             else if (cartListBox.SelectedIndex != -1 && shoppingCart[cartListBox.SelectedIndex].Count == 1)
             {
                 shoppingCart.RemoveAt(cartListBox.SelectedIndex);
-                UpdateShoppingCart();
+                UpdateCartListBox();
                 return;
             }
             MessageBox.Show("Välj en produkt att ta bort");
         }
 
-        private void RemoveAllProductsClick(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Removes a product from the shoppingCart regardless of the count
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RemoveAllSelectedProductsClick(object sender, RoutedEventArgs e)
         {
             if (cartListBox.SelectedIndex != -1)
             {
                 shoppingCart.RemoveAt(cartListBox.SelectedIndex);
-                UpdateShoppingCart();
+                UpdateCartListBox();
                 return;
             }
             MessageBox.Show("Välj en produkt att ta bort");
         }
 
+        /// <summary>
+        /// Clears the shoppingCart and updates the cartListBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ClearCartClick(object sender, RoutedEventArgs e)
         {
             shoppingCart.Clear();
-            UpdateShoppingCart();
+            UpdateCartListBox();
         }
 
+        /// <summary>
+        /// Adds the selected product in the productListBox to the shoppingCart using selectedindex in the searchTermList
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddProductToCart(object sender, RoutedEventArgs e)
         {
+            // check if a product is selected using an if statement to prevent the program from crashing
             if (productListBox.SelectedIndex != -1)
             {
+                // check if shoppingCart already contains the product in order to set the Product.Count property
                 if (shoppingCart.Contains(searchTermList[productListBox.SelectedIndex]))
                 {
                     int index = shoppingCart.IndexOf(searchTermList[productListBox.SelectedIndex]);
@@ -562,31 +615,43 @@ namespace Projektarbete
                     int index = shoppingCart.IndexOf(searchTermList[productListBox.SelectedIndex]);
                     shoppingCart[index].Count = 1;
                 }
-                UpdateShoppingCart();
+                UpdateCartListBox();
+                // add return to avoid displaying the messagebox when a product is added
                 return;
             }
+            // if no product has been selected a messagebox is displayed
             MessageBox.Show("Ingen produkt vald");
         }
 
-        private void UpdateShoppingCart()
+        /// <summary>
+        /// Updates the items in cartListBox by clearing the cartListBox and adding every products title, price and count from the shoppingCart
+        /// </summary>
+        private void UpdateCartListBox()
         {
+            decimal sum = 0;
+            // in order to display the added product in the shoppingCart the cartListBox needs to be cleared to avoid displaying the previous products in the shoppinCart and the new products
             cartListBox.Items.Clear();
+            // adds the products from the shoppingCart to the items in cartListBox
             foreach (Product product in shoppingCart)
             {
                 cartListBox.Items.Add(product.Title + " (" + product.Price + ") kr" + " (" + product.Count + ")");
             }
-            decimal sum = 0;
+            // calculates the shoppingCarts total sum
             foreach (Product product in shoppingCart)
             {
                 sum += product.Price * product.Count;
             }
-
+            // if a coupon has been validated calculate the sum with a discount
             if (hasDiscount) sum *= currentCoupon.Discount;
 
             sumTextBlock.Text = "Varukorgens summa: " + (Convert.ToString(Math.Round(sum, 1))) + " kr";
             cartExpander.Header = "Din varukorg " + (Convert.ToString(Math.Round(sum, 1))) + " kr";
         }
 
+        /// <summary>
+        /// Checks if any product title contains the input string from the searchBox
+        /// </summary>
+        /// <param name="searchTerm"></param>
         private void UpdateProductListBox(string searchTerm)
         {
             searchTermList.Clear();
@@ -617,6 +682,9 @@ namespace Projektarbete
             }
         }
 
+        /// <summary>
+        /// Loops through every product in the productList, if the categoryList does not already contain the products category it will be added to the categoryList
+        /// </summary>
         private void GenerateCategories()
         {
             foreach (var product in productList)

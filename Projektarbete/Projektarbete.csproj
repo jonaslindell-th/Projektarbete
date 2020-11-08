@@ -11,14 +11,14 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
+	  <None Remove="JSON\Cart.json" />
 	  <None Remove="JSON\Products.json" />
-	  <None Remove="Products.csv" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Content Include="JSON\Products.json">
+	  <Content Include="JSON\Cart.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
-	  <Content Include="Products.csv">
+	  <Content Include="JSON\Products.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>
