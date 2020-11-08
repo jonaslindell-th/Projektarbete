@@ -1,6 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Projektarbete;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ProjektarbeteTest
 {
@@ -15,7 +18,7 @@ namespace ProjektarbeteTest
         [TestMethod()]
         public void SaveCartTest()
         {
-            List<Product> p = new List<Product>()
+            List<Product> preSaveCart = new List<Product>()
             {
                 new Product()
                 {
@@ -32,13 +35,20 @@ namespace ProjektarbeteTest
                     Count = 4,
                     Price = 9.99M,
                     Description = "Guleböj"
+                },
+                new Product()
+                {
+                    Title = "Päron",
+                    Category = "Mat",
+                    Count = 4541354,
+                    Price = 0.99M,
+                    Description = "Lila Päron"
                 }
             };
-            Product.SaveCart(p);
-
+            Product.SaveCart(preSaveCart);
             List<Product> deserializedCart = Product.LoadCart();
-
-            Assert.AreEqual(p.Count, deserializedCart.Count);
+                
+            Assert.AreEqual(preSaveCart.Count, deserializedCart.Count);
         }
     }
 }
