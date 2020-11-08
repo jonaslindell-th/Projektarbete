@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Projektarbete;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -26,7 +27,8 @@ namespace ProjektarbeteTest
                     Category = "Mat",
                     Count = 14,
                     Price = 4.99M,
-                    Description = "Rött äpple"
+                    Description = "Rött äpple",
+                    ProductImage = ""
                 },
                 new Product()
                 {
@@ -34,7 +36,8 @@ namespace ProjektarbeteTest
                     Category = "Mat",
                     Count = 4,
                     Price = 9.99M,
-                    Description = "Guleböj"
+                    Description = "Guleböj",
+                    ProductImage = ""
                 },
                 new Product()
                 {
@@ -42,13 +45,32 @@ namespace ProjektarbeteTest
                     Category = "Mat",
                     Count = 4541354,
                     Price = 0.99M,
-                    Description = "Lila Päron"
+                    Description = "Lila Päron",
+                    ProductImage = ""
                 }
             };
             Product.SaveCart(preSaveCart);
             List<Product> deserializedCart = Product.LoadCart();
-                
-            Assert.AreEqual(preSaveCart.Count, deserializedCart.Count);
+
+            bool areEqual = deserializedCart.Count == preSaveCart.Count;
+
+            if (areEqual)
+            {
+                for (int i = 0; i < preSaveCart.Count; i++)
+                {
+                    foreach(PropertyInfo p in preSaveCart[i].GetType().GetProperties())
+                    {
+                        if(p.GetValue(preSaveCart[i]).ToString() != p.GetValue(deserializedCart[i]).ToString())
+                        {
+                            areEqual = false;
+                            break;
+                        }
+                    }
+                    if (!areEqual) break;
+                }
+            }
+
+            Assert.AreEqual(true, areEqual);
         }
     }
 }
