@@ -11,8 +11,8 @@ namespace Projektarbete
 {
     public partial class MainWindow : Window
     {
-        private List<Product> productList = Product.DeserializeProducts(@"JSON\Products.json");
-        private List<Product> shoppingCart = Product.LoadCart();
+        private List<Product> productList = ShopUtils.DeserializeProducts(@"JSON\Products.json");
+        private List<Product> shoppingCart = ShopUtils.LoadCart();
         private List<Product> searchTermList = new List<Product>();
         private List<string> categoryList = new List<string>();
         private List<Coupon> couponList = Coupon.CouponCodes();
@@ -286,7 +286,7 @@ namespace Projektarbete
 
         private void SaveCartClick(object sender, RoutedEventArgs e)
         {
-            Product.SaveCart(this.shoppingCart);
+            ShopUtils.SaveCart(this.shoppingCart);
         }
 
         private void ShowReceipt(object sender, RoutedEventArgs e)
