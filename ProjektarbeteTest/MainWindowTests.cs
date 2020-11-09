@@ -49,8 +49,8 @@ namespace ProjektarbeteTest
                     ProductImage = ""
                 }
             };
-            Product.SaveCart(preSaveCart);
-            List<Product> deserializedCart = Product.LoadCart();
+            ShopUtils.SaveCart(preSaveCart);
+            List<Product> deserializedCart = ShopUtils.LoadCart();
 
             bool areEqual = deserializedCart.Count == preSaveCart.Count;
 
