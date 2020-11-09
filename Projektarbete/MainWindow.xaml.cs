@@ -58,7 +58,7 @@ namespace Projektarbete
             Brush textBoxBrush = (Brush)brushConverter.ConvertFromString("#40444B");
             Brush expanderBrush = (Brush)brushConverter.ConvertFromString("#202225");
             #endregion
-            
+
             // Set Window properties
             Title = "Butiken";
             Width = 800;
@@ -83,8 +83,6 @@ namespace Projektarbete
             mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
             mainGrid.Background = backgroundBrush;
 
-
-
             #region grid definiton for the Expander in leftGrid
             Grid expanderCartGrid = new Grid();
             expanderCartGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -97,8 +95,8 @@ namespace Projektarbete
             expanderCartGrid.ColumnDefinitions.Add(new ColumnDefinition());
             expanderCartGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
-            TextBlock cartTextBlock = CreateTextBlock("Varukorg", 18, TextAlignment.Center, expanderCartGrid, 0, 0, 2);
-            TextBlock discountTextBlock = CreateTextBlock("Mata in rabattkod nedan", 12, TextAlignment.Center, expanderCartGrid, 1, 0, 1);
+            TextBlock cartTextBlock = ShopUtils.CreateTextBlock("Varukorg", 18, TextAlignment.Center, expanderCartGrid, 0, 0, 2);
+            TextBlock discountTextBlock = ShopUtils.CreateTextBlock("Mata in rabattkod nedan", 12, TextAlignment.Center, expanderCartGrid, 1, 0, 1);
 
             // A combobox to display available coupons to the user
             couponComboBox = new ComboBox
@@ -120,7 +118,7 @@ namespace Projektarbete
             // Adds all available coupons to the couponComboBox items from the couponList which recieves predetermined coupons from file
             foreach (var coupon in couponList)
             {
-                couponComboBox.Items.Add(coupon.Code + " " +  (100 - Math.Round(coupon.Discount * 100, 0)) + "%");
+                couponComboBox.Items.Add(coupon.Code + " " + (100 - Math.Round(coupon.Discount * 100, 0)) + "%");
             }
 
             // A textbox for the user to enter coupon codes
@@ -136,11 +134,11 @@ namespace Projektarbete
             Grid.SetRow(couponTextBox, 2);
             Grid.SetColumnSpan(couponTextBox, 1);
 
-            CreateButton("Använd rabattkod", expanderCartGrid, 2, 2, 1, ValidateCoupon);
-            CreateButton("Rensa varukorg", expanderCartGrid, row: 3, column: 0, columnspan: 1, ClearCartClick);
-            CreateButton("Spara varukorg", expanderCartGrid, 3, 1, 1, SaveCartClick);
-            CreateButton("Ta bort en vald produkt", expanderCartGrid, row: 4, column: 0, columnspan: 1, RemoveProductClick);
-            CreateButton("Ta bort varje vald produkt", expanderCartGrid, 4, 1, 1, RemoveAllSelectedProductsClick);
+            ShopUtils.CreateButton("Använd rabattkod", expanderCartGrid, 2, 2, 1, ValidateCoupon);
+            ShopUtils.CreateButton("Rensa varukorg", expanderCartGrid, row: 3, column: 0, columnspan: 1, ClearCartClick);
+            ShopUtils.CreateButton("Spara varukorg", expanderCartGrid, 3, 1, 1, SaveCartClick);
+            ShopUtils.CreateButton("Ta bort en vald produkt", expanderCartGrid, row: 4, column: 0, columnspan: 1, RemoveProductClick);
+            ShopUtils.CreateButton("Ta bort varje vald produkt", expanderCartGrid, 4, 1, 1, RemoveAllSelectedProductsClick);
 
             // the cartListBox display all products in the shoppingCart list
             cartListBox = new ListBox
@@ -160,9 +158,9 @@ namespace Projektarbete
             Grid.SetColumnSpan(cartListBox, 2);
 
 
-            sumTextBlock = CreateTextBlock("Varukorgens summa: 0 kr", 12, TextAlignment.Left, expanderCartGrid, 6, 0, 1);
+            sumTextBlock = ShopUtils.CreateTextBlock("Varukorgens summa: 0 kr", 12, TextAlignment.Left, expanderCartGrid, 6, 0, 1);
 
-            CreateButton("Till kassan", expanderCartGrid, 6, 1, 1, ShowReceipt);
+            ShopUtils.CreateButton("Till kassan", expanderCartGrid, 6, 1, 1, ShowReceipt);
             #endregion
 
             #region leftGrid definition
@@ -199,8 +197,8 @@ namespace Projektarbete
             // Update the cartListBox in the Expander to add items from the shoppingCart list
             UpdateCartListBox();
 
-            TextBlock products = CreateTextBlock("Produkter", 18, TextAlignment.Center, leftGrid, 1, 0, 2);
-            TextBlock searchHeading = CreateTextBlock("Sök efter produkt", 12, TextAlignment.Center, leftGrid, 2, 0, 2);
+            TextBlock products = ShopUtils.CreateTextBlock("Produkter", 18, TextAlignment.Center, leftGrid, 1, 0, 2);
+            TextBlock searchHeading = ShopUtils.CreateTextBlock("Sök efter produkt", 12, TextAlignment.Center, leftGrid, 2, 0, 2);
 
             // A textbox definition where the user can input a search term
             searchBox = new TextBox
@@ -239,7 +237,7 @@ namespace Projektarbete
             }
             categoryBox.SelectionChanged += ShowCategory;
 
-            CreateButton("Lägg till vald produkt", leftGrid, row:5, column:0, columnspan:2, AddProductToCart);
+            ShopUtils.CreateButton("Lägg till vald produkt", leftGrid, row: 5, column: 0, columnspan: 2, AddProductToCart);
 
             // Listbox definition, used to display the product assortment from the searchTermList
             productListBox = new ListBox
@@ -269,7 +267,7 @@ namespace Projektarbete
             Grid.SetRow(rightStackPanel, 0);
             Grid.SetColumn(rightStackPanel, 1);
 
-            productHeading = CreateTextBlock("Välj produkt", 18, TextAlignment.Center, rightStackPanel);
+            productHeading = ShopUtils.CreateTextBlock("Välj produkt", 18, TextAlignment.Center, rightStackPanel);
             productHeading.Margin = new Thickness(5, 30, 5, 32);
 
             imageGrid = new Grid();
@@ -279,12 +277,11 @@ namespace Projektarbete
             currentImage = CreateImage("Images/Ica.png");
             imageGrid.Children.Add(currentImage);
 
-            productDescriptionHeading = CreateTextBlock("", 16, TextAlignment.Center, rightStackPanel);
-            productDescription = CreateTextBlock("", 12, TextAlignment.Center, rightStackPanel);
+            productDescriptionHeading = ShopUtils.CreateTextBlock("", 16, TextAlignment.Center, rightStackPanel);
+            productDescription = ShopUtils.CreateTextBlock("", 12, TextAlignment.Center, rightStackPanel);
             productDescription.FontWeight = FontWeights.Thin;
             productDescription.Margin = new Thickness(30, 5, 30, 5);
             #endregion
-
         }
 
         private void SaveCartClick(object sender, RoutedEventArgs e)
@@ -292,11 +289,6 @@ namespace Projektarbete
             Product.SaveCart(this.shoppingCart);
         }
 
-        /// <summary>
-        /// displays a receipt Datagrid in the right StackPanel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void ShowReceipt(object sender, RoutedEventArgs e)
         {
             productHeading.Text = "Ditt kvitto";
@@ -308,12 +300,13 @@ namespace Projektarbete
             decimal sum = 0;
 
             // DataGrid definition
-            DataGrid receiptDataGrid = new DataGrid 
+            DataGrid receiptDataGrid = new DataGrid
             {
-                Margin = new Thickness(5), 
-                MaxWidth = 450, MinHeight = 300, 
-                MaxHeight = 300, 
-                BorderThickness = new Thickness(0) 
+                Margin = new Thickness(5),
+                MaxWidth = 450,
+                MinHeight = 300,
+                MaxHeight = 300,
+                BorderThickness = new Thickness(0)
             };
             // prevents the user from altering the receipt
             receiptDataGrid.IsReadOnly = true;
@@ -342,10 +335,10 @@ namespace Projektarbete
                     Math.Round(-discount*product.Count, 2),
                     Math.Round(product.Price*product.Count*currentCoupon.Discount, 2)
                     });
-                    sum += product.Price*product.Count;
+                    sum += product.Price * product.Count;
                 }
                 // adds a bottom row containing total discount and total price with discount
-                receiptTable.Rows.Add(new object[] { "Totalt", null, null, Math.Round(-(sum - (sum*currentCoupon.Discount)), 2), Math.Round((sum * currentCoupon.Discount), 2) });
+                receiptTable.Rows.Add(new object[] { "Totalt", null, null, Math.Round(-(sum - (sum * currentCoupon.Discount)), 2), Math.Round((sum * currentCoupon.Discount), 2) });
             }
             //if no discount has been validated, the else statement set the discount values to null and present the products by adding a new row foreach product in the shoppingCart list
             else
@@ -360,7 +353,7 @@ namespace Projektarbete
                     null,
                     Math.Round(product.Price*product.Count, 2)
                     });
-                    sum += product.Price*product.Count;
+                    sum += product.Price * product.Count;
                 }
                 // adds a bottom row containing the total price
                 receiptTable.Rows.Add(new object[] { "Totalt", null, null, null, Math.Round(sum, 2) });
@@ -393,21 +386,11 @@ namespace Projektarbete
             }
         }
 
-        /// <summary>
-        /// Increases the cartExpander's columnspan to take up two columns
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void IncreaseCartColumnSpan(object sender, RoutedEventArgs e)
         {
             Grid.SetColumnSpan(cartExpander, 2);
         }
 
-        /// <summary>
-        /// Decreases the cartExpander's columnspan to take up one column
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void DecreaseCartColumnSpan(object sender, RoutedEventArgs e)
         {
             Grid.SetColumnSpan(cartExpander, 1);
@@ -456,10 +439,10 @@ namespace Projektarbete
             bool validCoupon = Coupon.IsValid(input);
 
             //This will update our coupon if the discount will leave the user with a better price than before
-            if(validCoupon && currentCoupon != null)
+            if (validCoupon && currentCoupon != null)
             {
                 Coupon compare = Coupon.CouponCodes().First(x => x.Code == input);
-                if(compare.Discount < currentCoupon.Discount)
+                if (compare.Discount < currentCoupon.Discount)
                 {
                     currentCoupon = compare;
                 }
@@ -474,7 +457,7 @@ namespace Projektarbete
 
             hasDiscount = currentCoupon != null;
 
-            if(currentCoupon == null)
+            if (currentCoupon == null)
             {
                 MessageBox.Show("Den inmatade rabattkoden är ej giltig, försök igen.");
                 return;
@@ -482,63 +465,6 @@ namespace Projektarbete
             UpdateCartListBox();
         }
 
-        private void CreateButton(string content, Grid grid, int row, int column, int columnspan, RoutedEventHandler onClick)
-        {
-            Button button = new Button
-            {
-                Content = content,
-                Margin = new Thickness(5),
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold
-            };
-            grid.Children.Add(button);
-            Grid.SetRow(button, row);
-            Grid.SetColumn(button, column);
-            Grid.SetColumnSpan(button, columnspan);
-            button.Click += onClick;
-        }
-
-        private TextBlock CreateTextBlock(string text, int fontSize, TextAlignment alignment, Grid grid, int row, int column, int columnSpan)
-        {
-            TextBlock textBlock = new TextBlock
-            {
-                Text = text,
-                TextWrapping = TextWrapping.Wrap,
-                Margin = new Thickness(5),
-                FontSize = fontSize,
-                TextAlignment = alignment,
-                Foreground = Brushes.White,
-                FontWeight = FontWeights.Bold
-            };
-            grid.Children.Add(textBlock);
-            Grid.SetRow(textBlock, row);
-            Grid.SetColumn(textBlock, column);
-            Grid.SetColumnSpan(textBlock, columnSpan);
-            return textBlock;
-        }
-
-        private TextBlock CreateTextBlock(string text, int fontSize, TextAlignment alignment, StackPanel grid)
-        {
-            TextBlock textBlock = new TextBlock
-            {
-                Text = text,
-                TextWrapping = TextWrapping.Wrap,
-                Margin = new Thickness(5),
-                FontFamily = new FontFamily("Arial"),
-                FontSize = fontSize,
-                TextAlignment = alignment,
-                Foreground = Brushes.White,
-                FontWeight = FontWeights.Bold
-            };
-            grid.Children.Add(textBlock);
-            return textBlock;
-        }
-
-        /// <summary>
-        /// Displays the selected product in the rightStackPanel
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void DisplaySelectedProduct(object sender, SelectionChangedEventArgs e)
         {
             if (productListBox.SelectedIndex != -1)
@@ -554,11 +480,6 @@ namespace Projektarbete
             }
         }
 
-        /// <summary>
-        /// Creates and returns a image by passing a path parameter
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
         private Image CreateImage(string filePath)
         {
             ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
@@ -574,11 +495,6 @@ namespace Projektarbete
             return image;
         }
 
-        /// <summary>
-        /// Subtracts one from the product count, if the count is 1 the product is removed from the shoppingCart
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void RemoveProductClick(object sender, RoutedEventArgs e)
         {
             if (cartListBox.SelectedIndex != -1 && shoppingCart[cartListBox.SelectedIndex].Count > 1)
@@ -596,11 +512,6 @@ namespace Projektarbete
             MessageBox.Show("Välj en produkt att ta bort");
         }
 
-        /// <summary>
-        /// Removes a product from the shoppingCart regardless of the count
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void RemoveAllSelectedProductsClick(object sender, RoutedEventArgs e)
         {
             if (cartListBox.SelectedIndex != -1)
@@ -612,22 +523,12 @@ namespace Projektarbete
             MessageBox.Show("Välj en produkt att ta bort");
         }
 
-        /// <summary>
-        /// Clears the shoppingCart and updates the cartListBox
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void ClearCartClick(object sender, RoutedEventArgs e)
         {
             shoppingCart.Clear();
             UpdateCartListBox();
         }
 
-        /// <summary>
-        /// Adds the selected product in the productListBox to the shoppingCart using selectedindex in the searchTermList
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void AddProductToCart(object sender, RoutedEventArgs e)
         {
             // check if a product is selected using an if statement to prevent the program from crashing
@@ -653,9 +554,6 @@ namespace Projektarbete
             MessageBox.Show("Ingen produkt vald");
         }
 
-        /// <summary>
-        /// Updates the items in cartListBox by clearing the cartListBox and adding every products title, price and count from the shoppingCart list
-        /// </summary>
         private void UpdateCartListBox()
         {
             decimal sum = 0;
@@ -678,45 +576,26 @@ namespace Projektarbete
             cartExpander.Header = "Din varukorg " + (Convert.ToString(Math.Round(sum, 1))) + " kr";
         }
 
-        /// <summary>
-        /// Checks if any product title contains the input string from the searchBox
-        /// </summary>
-        /// <param name="searchTerm"></param>
         private void UpdateProductListBox(string searchTerm)
         {
+            //clear the searchTermList and add products where the product title contains the search term
             searchTermList.Clear();
-            if (searchTerm != "")
+
+            var searchTermProducts = productList.Where(product => product.Title.ToLower().Contains(searchTerm.ToLower()));
+            foreach (Product product in searchTermProducts)
             {
-                var searchTermProducts = productList.Where(product => product.Title.ToLower().Contains(searchTerm.ToLower()));
-                foreach (Product product in searchTermProducts)
-                {
-                    searchTermList.Add(product);
-                }
-                productListBox.Items.Clear();
-                foreach (Product product in searchTermProducts)
-                {
-                    productListBox.Items.Add(product.Title + " (" + product.Price + ") kr");
-                }
+                searchTermList.Add(product);
             }
-            else
+            productListBox.Items.Clear();
+            foreach (Product product in searchTermProducts)
             {
-                foreach (Product product in productList)
-                {
-                    searchTermList.Add(product);
-                }
-                productListBox.Items.Clear();
-                foreach (Product product in searchTermList)
-                {
-                    productListBox.Items.Add(product.Title + " (" + product.Price + ") kr");
-                }
+                productListBox.Items.Add(product.Title + " (" + product.Price + ") kr");
             }
         }
 
-        /// <summary>
-        /// Loops through every product in the productList, if the categoryList does not already contain the products category it will be added to the categoryList
-        /// </summary>
         private void GenerateCategories()
         {
+            //Loop through products in the productList, if the categoryList does not already contain the product category it gets added to the categoryList
             foreach (var product in productList)
             {
                 if (!categoryList.Contains(product.Category))
