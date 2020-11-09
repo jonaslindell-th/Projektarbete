@@ -77,8 +77,10 @@ namespace Projektarbete
             Grid mainGrid = new Grid();
             root.Content = mainGrid;
             mainGrid.RowDefinitions.Add(new RowDefinition());
-            mainGrid.ColumnDefinitions.Add(new ColumnDefinition());// First column contains the shoppingcart and product assortment.
-            mainGrid.ColumnDefinitions.Add(new ColumnDefinition());// The second column displays the selected product and upon payment displays a receipt
+            // First column contains the shoppingcart and product assortment.
+            mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            // The second column displays the selected product and upon payment displays the receipt
+            mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
             mainGrid.Background = backgroundBrush;
 
 
@@ -111,7 +113,8 @@ namespace Projektarbete
             expanderCartGrid.Children.Add(couponComboBox);
             Grid.SetRow(couponComboBox, 1);
             Grid.SetColumn(couponComboBox, 1);
-            couponComboBox.Items.Add("Dina rabattkoder");// add a default index at 0, can be selected to clear the couponTextBox.Text
+            // add a default index at 0, can be selected to clear the couponTextBox.Text
+            couponComboBox.Items.Add("Dina rabattkoder");
             couponComboBox.SelectedIndex = 0;
             couponComboBox.SelectionChanged += AddToCouponTextBox;
             // Adds all available coupons to the couponComboBox items from the couponList which recieves predetermined coupons from file
@@ -139,7 +142,7 @@ namespace Projektarbete
             CreateButton("Ta bort en vald produkt", expanderCartGrid, row: 4, column: 0, columnspan: 1, RemoveProductClick);
             CreateButton("Ta bort varje vald produkt", expanderCartGrid, 4, 1, 1, RemoveAllSelectedProductsClick);
 
-            // the cartListBox display all products in the shoppingCartList
+            // the cartListBox display all products in the shoppingCart list
             cartListBox = new ListBox
             {
                 Margin = new Thickness(5),
@@ -156,10 +159,10 @@ namespace Projektarbete
             Grid.SetRow(cartListBox, 5);
             Grid.SetColumnSpan(cartListBox, 2);
 
+
             sumTextBlock = CreateTextBlock("Varukorgens summa: 0 kr", 12, TextAlignment.Left, expanderCartGrid, 6, 0, 1);
 
             CreateButton("Till kassan", expanderCartGrid, 6, 1, 1, ShowReceipt);
-
             #endregion
 
             #region leftGrid definition
@@ -180,7 +183,8 @@ namespace Projektarbete
             // Expander definition, when expanded the expanderCartGrid will be displayed in the leftGrid
             cartExpander = new Expander
             {
-                Content = expanderCartGrid,// sets the expanders content to the expanderCartGrid defined above
+                // sets the expanders content to the expanderCartGrid defined above
+                Content = expanderCartGrid,
                 Header = "Din varukorg 0 kr",
                 FontWeight = FontWeights.SemiBold,
                 Foreground = Brushes.White,
@@ -192,6 +196,8 @@ namespace Projektarbete
             // when expanded the cartExpander's columnspan increases to take up two columns and when collapsed shrinks to one column
             cartExpander.Collapsed += DecreaseCartColumnSpan;
             cartExpander.Expanded += IncreaseCartColumnSpan;
+            // Update the cartListBox in the Expander to add items from the shoppingCart list
+            UpdateCartListBox();
 
             TextBlock products = CreateTextBlock("Produkter", 18, TextAlignment.Center, leftGrid, 1, 0, 2);
             TextBlock searchHeading = CreateTextBlock("Sök efter produkt", 12, TextAlignment.Center, leftGrid, 2, 0, 2);
@@ -226,7 +232,7 @@ namespace Projektarbete
             categoryBox.Items.Add("Välj kategori");
             categoryBox.SelectedIndex = 0;
             GenerateCategories();
-            // add categories to the categoryBox
+            // adds categories to the categoryBox
             foreach (string category in categoryList)
             {
                 categoryBox.Items.Add(category);
@@ -251,8 +257,10 @@ namespace Projektarbete
             Grid.SetRow(productListBox, 6);
             Grid.SetColumn(productListBox, 0);
             Grid.SetColumnSpan(productListBox, 2);
-            UpdateProductListBox("");// set the searchTerm to empty string in order to add every product from the productList upon start
-            productListBox.SelectionChanged += DisplaySelectedProduct;// selecting an item in the listbox will display productinformation in the stackpanel to the right
+            // set the searchTerm to empty string in order to add every product from the productList upon start
+            UpdateProductListBox("");
+            // selecting an item in the listbox will display productinformation in the stackpanel to the right
+            productListBox.SelectionChanged += DisplaySelectedProduct;
             #endregion
 
             #region rightStackPanel definition
@@ -267,6 +275,7 @@ namespace Projektarbete
             imageGrid = new Grid();
             rightStackPanel.Children.Add(imageGrid);
 
+            // sets a startup image
             currentImage = CreateImage("Images/Ica.png");
             imageGrid.Children.Add(currentImage);
 
@@ -274,9 +283,8 @@ namespace Projektarbete
             productDescription = CreateTextBlock("", 12, TextAlignment.Center, rightStackPanel);
             productDescription.FontWeight = FontWeights.Thin;
             productDescription.Margin = new Thickness(30, 5, 30, 5);
-            // ##### End of right StackPanel definition ####
-            UpdateCartListBox();
             #endregion
+
         }
 
         private void SaveCartClick(object sender, RoutedEventArgs e)
@@ -284,13 +292,18 @@ namespace Projektarbete
             Product.SaveCart(this.shoppingCart);
         }
 
-        private void ShowReceipt(object sender, RoutedEventArgs e)// displays a receipt Datagrid in the right StackPanel
+        /// <summary>
+        /// displays a receipt Datagrid in the right StackPanel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShowReceipt(object sender, RoutedEventArgs e)
         {
             productHeading.Text = "Ditt kvitto";
             productDescriptionHeading.Text = "Ditt köp har genomförts";
             productDescription.Text = "Tack för att du handlar hos oss!";
-
-            imageGrid.Children.Clear();// without clearing the imageGrid a picture would still be visible behind the datagrid
+            // without clearing the imageGrid a picture would still be visible behind the datagrid
+            imageGrid.Children.Clear();
 
             decimal sum = 0;
 
@@ -302,7 +315,8 @@ namespace Projektarbete
                 MaxHeight = 300, 
                 BorderThickness = new Thickness(0) 
             };
-            receiptDataGrid.IsReadOnly = true;// prevents the user from altering the receipt
+            // prevents the user from altering the receipt
+            receiptDataGrid.IsReadOnly = true;
 
             // DataTable definition, which is the DataGrid's itemsource
             DataTable receiptTable = new DataTable();
@@ -330,7 +344,8 @@ namespace Projektarbete
                     });
                     sum += product.Price*product.Count;
                 }
-                receiptTable.Rows.Add(new object[] { "Totalt", null, null, Math.Round(-(sum - (sum*currentCoupon.Discount)), 2), Math.Round((sum * currentCoupon.Discount), 2) });// adds a last row containing total discount and total price with discount
+                // adds a bottom row containing total discount and total price with discount
+                receiptTable.Rows.Add(new object[] { "Totalt", null, null, Math.Round(-(sum - (sum*currentCoupon.Discount)), 2), Math.Round((sum * currentCoupon.Discount), 2) });
             }
             //if no discount has been validated, the else statement set the discount values to null and present the products by adding a new row foreach product in the shoppingCart list
             else
@@ -347,10 +362,13 @@ namespace Projektarbete
                     });
                     sum += product.Price*product.Count;
                 }
-                receiptTable.Rows.Add(new object[] { "Totalt", null, null, null, Math.Round(sum, 2) });// adds a last row containing the total price
+                // adds a bottom row containing the total price
+                receiptTable.Rows.Add(new object[] { "Totalt", null, null, null, Math.Round(sum, 2) });
             }
-            receiptDataGrid.ItemsSource = receiptTable.DefaultView;// sets the datagrids content to the datatable containing the products
-            imageGrid.Children.Add(receiptDataGrid);// displays the datagrid in the imageGrid in the StackPanel
+            // sets the datagrids content to the datatable containing the products
+            receiptDataGrid.ItemsSource = receiptTable.DefaultView;
+            // displays the datagrid in the imageGrid in the StackPanel
+            imageGrid.Children.Add(receiptDataGrid);
             Grid.SetRow(receiptDataGrid, 0);
             Grid.SetColumn(receiptDataGrid, 0);
 
@@ -516,11 +534,18 @@ namespace Projektarbete
             return textBlock;
         }
 
+        /// <summary>
+        /// Displays the selected product in the rightStackPanel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DisplaySelectedProduct(object sender, SelectionChangedEventArgs e)
         {
             if (productListBox.SelectedIndex != -1)
             {
+                //change the heading, image, descriptionheading, description by referring to the selectedindex in the searchTermList
                 productHeading.Text = searchTermList[productListBox.SelectedIndex].Title;
+                // clear the imageGrid children to prevent images from stacking on top of each other
                 imageGrid.Children.Clear();
                 currentImage = CreateImage("Images/" + searchTermList[productListBox.SelectedIndex].ProductImage);
                 imageGrid.Children.Add(currentImage);
@@ -529,6 +554,11 @@ namespace Projektarbete
             }
         }
 
+        /// <summary>
+        /// Creates and returns a image by passing a path parameter
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         private Image CreateImage(string filePath)
         {
             ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
@@ -624,7 +654,7 @@ namespace Projektarbete
         }
 
         /// <summary>
-        /// Updates the items in cartListBox by clearing the cartListBox and adding every products title, price and count from the shoppingCart
+        /// Updates the items in cartListBox by clearing the cartListBox and adding every products title, price and count from the shoppingCart list
         /// </summary>
         private void UpdateCartListBox()
         {
