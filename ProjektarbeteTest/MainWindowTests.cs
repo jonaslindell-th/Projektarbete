@@ -5,18 +5,21 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.IO;
+using System.Text.Json;
+using System;
 
 namespace ProjektarbeteTest
 {
-    [TestClass()]
+    [TestClass]
     public class MainWindowTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void InvalidCouponTest()
         {
             Assert.AreEqual(false, Coupon.IsValid(""));
         }
-        [TestMethod()]
+        [TestMethod]
         public void SaveCartTest()
         {
             List<Product> preSaveCart = new List<Product>()
@@ -71,6 +74,21 @@ namespace ProjektarbeteTest
             }
 
             Assert.AreEqual(true, areEqual);
+        }
+        [TestMethod]
+        public void InvalidJsonFormatting()
+        {
+            List<Product> products = new List<Product>() { new Product(), new Product(), new Product() };
+            string path = ShopUtils.GetFilePath("Cart.json");
+
+            Action action = delegate 
+            {
+                File.WriteAllText(path, "This is not json");
+                products = ShopUtils.DeserializeProducts(path);
+            };
+
+            Assert.ThrowsException<JsonException>(action);
+            Assert.AreEqual(3, products.Count);
         }
     }
 }
