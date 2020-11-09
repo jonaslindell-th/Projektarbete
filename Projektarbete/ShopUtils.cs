@@ -80,6 +80,20 @@ namespace Projektarbete
             return items;
         }
 
+        public static List<string> GenerateCategories(List<Product> products)
+        {
+            List<string> categories = new List<string>();
+            //Loop through products in the productList, if the categoryList does not already contain the product category it gets added to the categoryList
+            foreach (Product product in products)
+            {
+                if (!categories.Contains(product.Category))
+                {
+                    categories.Add(product.Category);
+                }
+            }
+            return categories;
+        }
+
         public static void SaveCart(List<Product> cart)
         {
             var json = JsonSerializer.Serialize(cart,

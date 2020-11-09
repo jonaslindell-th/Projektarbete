@@ -229,7 +229,7 @@ namespace Projektarbete
             Grid.SetColumnSpan(categoryBox, 2);
             categoryBox.Items.Add("Välj kategori");
             categoryBox.SelectedIndex = 0;
-            GenerateCategories();
+            categoryList = ShopUtils.GenerateCategories(productList);
             // adds categories to the categoryBox
             foreach (string category in categoryList)
             {
@@ -590,18 +590,6 @@ namespace Projektarbete
             foreach (Product product in searchTermProducts)
             {
                 productListBox.Items.Add(product.Title + " (" + product.Price + ") kr");
-            }
-        }
-
-        private void GenerateCategories()
-        {
-            //Loop through products in the productList, if the categoryList does not already contain the product category it gets added to the categoryList
-            foreach (var product in productList)
-            {
-                if (!categoryList.Contains(product.Category))
-                {
-                    categoryList.Add(product.Category);
-                }
             }
         }
     }
