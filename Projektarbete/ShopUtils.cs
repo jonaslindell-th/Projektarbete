@@ -4,11 +4,15 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.IO;
+using System.Text.Json;
 
 namespace Projektarbete
 {
-    public class ShopUtils
+    public static class ShopUtils
     {
+        public static string GetFilePath(string fileName) => $@"C:\Windows\Temp\{fileName}";
+
         public static void CreateButton(string content, Grid grid, int row, int column, int columnspan, RoutedEventHandler onClick)
         {
             Button button = new Button
@@ -44,7 +48,6 @@ namespace Projektarbete
             return textBlock;
         }
 
-
         public static TextBlock CreateTextBlock(string text, int fontSize, TextAlignment alignment, StackPanel grid)
         {
             TextBlock textBlock = new TextBlock
@@ -60,6 +63,43 @@ namespace Projektarbete
             };
             grid.Children.Add(textBlock);
             return textBlock;
+        }
+
+        public static List<Product> DeserializeProducts(string path)
+        {
+            if (!File.Exists(path)) File.Create(path).Close();
+
+            List<Product> items = new List<Product>();
+            using (StreamReader reader = new StreamReader(path))
+            {
+                var products = reader.ReadToEnd();
+
+                items = JsonSerializer.Deserialize<List<Product>>(products);
+                reader.Close();
+            }
+            return items;
+        }
+
+        public static void SaveCart(List<Product> cart)
+        {
+            var json = JsonSerializer.Serialize(cart,
+                new JsonSerializerOptions()
+                {
+                    WriteIndented = true
+                });
+
+            string path = GetFilePath("Cart.json");
+            File.WriteAllText(path, json);
+        }
+
+        public static List<Product> LoadCart()
+        {
+            try
+            {
+                List<Product> items = DeserializeProducts(GetFilePath("Cart.json"));
+                return items;
+            }
+            catch (JsonException) { return new List<Product>(); }
         }
     }
 }
