@@ -29,7 +29,7 @@ namespace Projektarbete
             button.Click += onClick;
         }
 
-        public static TextBlock CreateTextBlock(string text, int fontSize, TextAlignment alignment, Grid grid, int row, int column, int columnSpan)
+        public static TextBlock CreateTextBlock(string text, int fontSize, TextAlignment alignment)
         {
             TextBlock textBlock = new TextBlock
             {
@@ -41,10 +41,6 @@ namespace Projektarbete
                 Foreground = Brushes.White,
                 FontWeight = FontWeights.Bold
             };
-            grid.Children.Add(textBlock);
-            Grid.SetRow(textBlock, row);
-            Grid.SetColumn(textBlock, column);
-            Grid.SetColumnSpan(textBlock, columnSpan);
             return textBlock;
         }
 

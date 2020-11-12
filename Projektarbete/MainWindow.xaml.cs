@@ -61,7 +61,7 @@ namespace Projektarbete
 
             // Set Window properties
             Title = "Butiken";
-            Width = 800;
+            Width = 900;
             Height = 600;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             // Changes the Window icon
@@ -95,8 +95,17 @@ namespace Projektarbete
             expanderCartGrid.ColumnDefinitions.Add(new ColumnDefinition());
             expanderCartGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
-            TextBlock cartTextBlock = ShopUtils.CreateTextBlock("Varukorg", 18, TextAlignment.Center, expanderCartGrid, 0, 0, 2);
-            TextBlock discountTextBlock = ShopUtils.CreateTextBlock("Mata in rabattkod nedan", 12, TextAlignment.Center, expanderCartGrid, 1, 0, 1);
+            TextBlock cartTextBlock = ShopUtils.CreateTextBlock("Varukorg", 18, TextAlignment.Center);
+            expanderCartGrid.Children.Add(cartTextBlock);
+            Grid.SetRow(cartTextBlock, 0);
+            Grid.SetColumn(cartTextBlock, 0);
+            Grid.SetColumnSpan(cartTextBlock, 2);
+
+            TextBlock discountTextBlock = ShopUtils.CreateTextBlock("Mata in rabattkod nedan", 12, TextAlignment.Center);
+            expanderCartGrid.Children.Add(discountTextBlock);
+            Grid.SetRow(discountTextBlock, 1);
+            Grid.SetColumn(discountTextBlock, 0);
+            Grid.SetColumnSpan(discountTextBlock, 1);
 
             // A combobox to display available coupons to the user
             couponComboBox = new ComboBox
@@ -157,8 +166,11 @@ namespace Projektarbete
             Grid.SetRow(cartListBox, 5);
             Grid.SetColumnSpan(cartListBox, 2);
 
-
-            sumTextBlock = ShopUtils.CreateTextBlock("Varukorgens summa: 0 kr", 12, TextAlignment.Left, expanderCartGrid, 6, 0, 1);
+            sumTextBlock = ShopUtils.CreateTextBlock("Varukorgens summa: 0 kr", 12, TextAlignment.Left);
+            expanderCartGrid.Children.Add(sumTextBlock);
+            Grid.SetRow(sumTextBlock, 6);
+            Grid.SetColumn(sumTextBlock, 0);
+            Grid.SetColumnSpan(sumTextBlock, 1);
 
             ShopUtils.CreateButton("Till kassan", expanderCartGrid, 6, 1, 1, ShowReceipt);
             #endregion
@@ -197,8 +209,17 @@ namespace Projektarbete
             // Update the cartListBox in the Expander to add items from the shoppingCart list
             UpdateCartListBox();
 
-            TextBlock products = ShopUtils.CreateTextBlock("Produkter", 18, TextAlignment.Center, leftGrid, 1, 0, 2);
-            TextBlock searchHeading = ShopUtils.CreateTextBlock("Sök efter produkt", 12, TextAlignment.Center, leftGrid, 2, 0, 2);
+            TextBlock products = ShopUtils.CreateTextBlock("Produkter", 18, TextAlignment.Center);
+            leftGrid.Children.Add(products);
+            Grid.SetRow(products, 1);
+            Grid.SetColumn(products, 0);
+            Grid.SetColumnSpan(products, 2);
+
+            TextBlock searchHeading = ShopUtils.CreateTextBlock("Sök efter produkt", 12, TextAlignment.Center);
+            leftGrid.Children.Add(searchHeading);
+            Grid.SetRow(searchHeading, 2);
+            Grid.SetColumn(searchHeading, 0);
+            Grid.SetColumnSpan(searchHeading, 2);
 
             // A textbox definition where the user can input a search term
             searchBox = new TextBox
