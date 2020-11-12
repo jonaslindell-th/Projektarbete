@@ -23,6 +23,21 @@ namespace AssortmentEditor
         List<Projektarbete.Product> productList = Projektarbete.ShopUtils.DeserializeProducts(@"JSON\Products.json");
         List<Projektarbete.Coupon> couponList = Projektarbete.Coupon.CouponCodes();
 
+        Grid editGrid;
+
+        Grid buttonClickGrid;
+
+        Brush listBoxBrush;
+        Brush textBoxBrush;
+
+        ListBox editProductListBox;
+
+        TextBox nameBox;
+        TextBox descriptionBox;
+        TextBox priceBox;
+        TextBox categoryBox;
+        TextBox pathBox;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -37,8 +52,8 @@ namespace AssortmentEditor
             // declare a brushconverter to convert a hex color code string to a Brush color
             BrushConverter brushConverter = new System.Windows.Media.BrushConverter();
             Brush backgroundBrush = (Brush)brushConverter.ConvertFromString("#2F3136");
-            Brush listBoxBrush = (Brush)brushConverter.ConvertFromString("#36393F");
-            Brush textBoxBrush = (Brush)brushConverter.ConvertFromString("#40444B");
+            listBoxBrush = (Brush)brushConverter.ConvertFromString("#36393F");
+            textBoxBrush = (Brush)brushConverter.ConvertFromString("#40444B");
             Brush expanderBrush = (Brush)brushConverter.ConvertFromString("#202225");
             #endregion
 
@@ -61,16 +76,275 @@ namespace AssortmentEditor
             root.Content = selectionGrid;
             //mainGrid.Margin = new Thickness(5);
             selectionGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            selectionGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            selectionGrid.RowDefinitions.Add(new RowDefinition ());
+            //selectionGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            selectionGrid.RowDefinitions.Add(new RowDefinition());
             selectionGrid.ColumnDefinitions.Add(new ColumnDefinition());
             selectionGrid.Background = backgroundBrush;
-            selectionGrid.ShowGridLines = true;
 
             TextBlock headingTextBlock = Projektarbete.ShopUtils.CreateTextBlock("Sortiment hanteraren", 18, TextAlignment.Center);
             selectionGrid.Children.Add(headingTextBlock);
             Grid.SetRow(headingTextBlock, 0);
-            Grid.SetColumnSpan(headingTextBlock, 1);
+            Grid.SetColumnSpan(headingTextBlock, 3);
+
+            editGrid = new Grid();
+            Grid.SetRow(editGrid, 2);
+            editGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            editGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            editGrid.RowDefinitions.Add(new RowDefinition());
+            selectionGrid.Children.Add(editGrid);
+
+            StackPanel buttonPanel = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+            editGrid.Children.Add(buttonPanel);
+            Grid.SetColumn(buttonPanel, 0);
+
+            Button editProducts = new Button
+            {
+                Content = "Ändra produkter",
+                Margin = new Thickness(5),
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Padding = new Thickness(10)
+            };
+            buttonPanel.Children.Add(editProducts);
+            editProducts.Click += CreateEditProductPanel;
+
+            Button addProduct = new Button
+            {
+                Content = "Lägg till produkt",
+                Margin = new Thickness(5),
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Padding = new Thickness(10)
+            };
+            buttonPanel.Children.Add(addProduct);
+            editProducts.Click += CreateEditProductPanel;
+
+            Button editCoupons = new Button
+            {
+                Content = "Ändra kuponger",
+                Margin = new Thickness(5),
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Padding = new Thickness(10)
+            };
+            buttonPanel.Children.Add(editCoupons);
+
+            Button addCoupon = new Button
+            {
+                Content = "Lägg till kupong",
+                Margin = new Thickness(5),
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Padding = new Thickness(10)
+            };
+            buttonPanel.Children.Add(addCoupon);
+            editProducts.Click += CreateEditProductPanel;
+
+            buttonClickGrid = new Grid();
+            editGrid.Children.Add(buttonClickGrid);
+            Grid.SetRow(buttonClickGrid, 1);
+            Grid.SetColumn(buttonClickGrid, 1);
+        }
+
+        private void CreateEditProductPanel(object sender, RoutedEventArgs e)
+        {
+
+            buttonClickGrid.Children.Clear();
+
+            Grid editProductGrid = new Grid();
+            editProductGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            editProductGrid.RowDefinitions.Add(new RowDefinition());
+            editProductGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            editProductGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+            buttonClickGrid.Children.Add(editProductGrid);
+
+            TextBlock changeProductsHeader = Projektarbete.ShopUtils.CreateTextBlock("Ändra produkter", 16, TextAlignment.Center);
+            editProductGrid.Children.Add(changeProductsHeader);
+            Grid.SetRow(changeProductsHeader, 0);
+            Grid.SetColumnSpan(changeProductsHeader, 2);
+
+            editProductListBox = new ListBox
+            {
+                Margin = new Thickness(5),
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                MaxHeight = 425,
+                MaxWidth = 300,
+                Background = listBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold
+            };
+            editProductGrid.Children.Add(editProductListBox);
+            Grid.SetRow(editProductListBox, 1);
+            Grid.SetColumn(editProductListBox, 0);
+            UpdateProductListBox();
+            editProductListBox.SelectionChanged += SetBoxText;
+
+            Grid productPropertiesGrid = new Grid();
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            productPropertiesGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            editProductGrid.Children.Add(productPropertiesGrid);
+            Grid.SetRow(productPropertiesGrid, 1);
+            Grid.SetColumn(productPropertiesGrid, 1);
+
+            TextBlock editProductHeader = Projektarbete.ShopUtils.CreateTextBlock("Produktens egenskaper", 14, TextAlignment.Center);
+            productPropertiesGrid.Children.Add(editProductHeader);
+            Grid.SetColumnSpan(editProductHeader, 2);
+
+            TextBlock editNameText = Projektarbete.ShopUtils.CreateTextBlock("Namn", 10, TextAlignment.Left);
+            productPropertiesGrid.Children.Add(editNameText);
+            Grid.SetRow(editNameText, 1);
+            Grid.SetColumn(editNameText, 0);
+
+            nameBox = new TextBox
+            {
+                Margin = new Thickness(5),
+                Background = textBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Width = 200
+            };
+            productPropertiesGrid.Children.Add(nameBox);
+            nameBox.HorizontalAlignment = HorizontalAlignment.Left;
+            Grid.SetRow(nameBox, 1);
+            Grid.SetColumn(nameBox, 1);
+
+            TextBlock editDescriptionText = Projektarbete.ShopUtils.CreateTextBlock("Beskrivning", 10, TextAlignment.Left);
+            productPropertiesGrid.Children.Add(editDescriptionText);
+            Grid.SetRow(editDescriptionText, 2);
+            Grid.SetColumn(editDescriptionText, 0);
+
+            descriptionBox = new TextBox
+            {
+                Margin = new Thickness(5),
+                Background = textBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Width = 200
+            };
+            productPropertiesGrid.Children.Add(descriptionBox);
+            descriptionBox.HorizontalAlignment = HorizontalAlignment.Left;
+            Grid.SetRow(descriptionBox, 2);
+            Grid.SetColumn(descriptionBox, 1);
+
+            TextBlock editPriceText = Projektarbete.ShopUtils.CreateTextBlock("Pris", 10, TextAlignment.Left);
+            productPropertiesGrid.Children.Add(editPriceText);
+            Grid.SetRow(editPriceText, 3);
+            Grid.SetColumn(editPriceText, 0);
+
+            priceBox = new TextBox
+            {
+                Margin = new Thickness(5),
+                Background = textBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Width = 200
+            };
+            productPropertiesGrid.Children.Add(priceBox);
+            priceBox.HorizontalAlignment = HorizontalAlignment.Left;
+            Grid.SetRow(priceBox, 3);
+            Grid.SetColumn(priceBox, 1);
+
+            TextBlock editCategoryText = Projektarbete.ShopUtils.CreateTextBlock("Kategori", 10, TextAlignment.Left);
+            productPropertiesGrid.Children.Add(editCategoryText);
+            Grid.SetRow(editCategoryText, 4);
+            Grid.SetColumn(editCategoryText, 0);
+
+            categoryBox = new TextBox
+            {
+                Margin = new Thickness(5),
+                Background = textBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Width = 200
+            };
+            productPropertiesGrid.Children.Add(categoryBox);
+            categoryBox.HorizontalAlignment = HorizontalAlignment.Left;
+            Grid.SetRow(categoryBox, 4);
+            Grid.SetColumn(categoryBox, 1);
+
+            TextBlock editPathText = Projektarbete.ShopUtils.CreateTextBlock("Bild", 10, TextAlignment.Left);
+            productPropertiesGrid.Children.Add(editPathText);
+            Grid.SetRow(editPathText, 5);
+            Grid.SetColumn(editPathText, 0);
+
+            pathBox = new TextBox
+            {
+                Margin = new Thickness(5),
+                Background = textBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Width = 200
+            };
+            productPropertiesGrid.Children.Add(pathBox);
+            pathBox.HorizontalAlignment = HorizontalAlignment.Left;
+            Grid.SetRow(pathBox, 5);
+            Grid.SetColumn(pathBox, 1);
+
+            Button saveProductChanges = new Button
+            {
+                Content = "Spara ändringar",
+                Margin = new Thickness(5),
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                MaxWidth = 120
+            };
+            productPropertiesGrid.Children.Add(saveProductChanges);
+            Grid.SetRow(saveProductChanges, 6);
+            Grid.SetColumnSpan(saveProductChanges, 2);
+            saveProductChanges.Click += SaveProductChangesClick;
+        }
+
+        private void SaveProductChangesClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                productList[editProductListBox.SelectedIndex].Title = nameBox.Text;
+                productList[editProductListBox.SelectedIndex].Description = descriptionBox.Text;
+                productList[editProductListBox.SelectedIndex].Price = decimal.Parse(priceBox.Text);
+                productList[editProductListBox.SelectedIndex].Category = categoryBox.Text;
+                productList[editProductListBox.SelectedIndex].ProductImage = pathBox.Text;
+                UpdateProductListBox();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Felaktig inmatning");
+            }
+        }
+
+        private void SetBoxText(object sender, SelectionChangedEventArgs e)
+        {
+            if (editProductListBox.SelectedIndex != -1)
+            {
+                nameBox.Text = productList[editProductListBox.SelectedIndex].Title;
+                descriptionBox.Text = productList[editProductListBox.SelectedIndex].Description;
+                priceBox.Text = productList[editProductListBox.SelectedIndex].Price.ToString();
+                categoryBox.Text = productList[editProductListBox.SelectedIndex].Category;
+                pathBox.Text = productList[editProductListBox.SelectedIndex].ProductImage;
+            }
+        }
+
+        private void UpdateProductListBox()
+        {
+            editProductListBox.Items.Clear();
+            foreach (Projektarbete.Product product in productList)
+            {
+                editProductListBox.Items.Add(product.Title + " (" + product.Price + ") kr");
+            }
         }
     }
 }
