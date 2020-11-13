@@ -106,7 +106,7 @@ namespace AssortmentEditor
                 Padding = new Thickness(10)
             };
             buttonPanel.Children.Add(editProducts);
-            editProducts.Click += CreateEditProductPanel;
+            editProducts.Click += CreateEditProductGrid;
 
             Button addProduct = new Button
             {
@@ -117,7 +117,7 @@ namespace AssortmentEditor
                 Padding = new Thickness(10)
             };
             buttonPanel.Children.Add(addProduct);
-            editProducts.Click += CreateEditProductPanel;
+            addProduct.Click += CreateAddProductGrid;
 
             Button editCoupons = new Button
             {
@@ -138,7 +138,7 @@ namespace AssortmentEditor
                 Padding = new Thickness(10)
             };
             buttonPanel.Children.Add(addCoupon);
-            editProducts.Click += CreateEditProductPanel;
+            editProducts.Click += CreateEditProductGrid;
 
             buttonClickGrid = new Grid();
             editGrid.Children.Add(buttonClickGrid);
@@ -146,7 +146,177 @@ namespace AssortmentEditor
             Grid.SetColumn(buttonClickGrid, 1);
         }
 
-        private void CreateEditProductPanel(object sender, RoutedEventArgs e)
+        private void CreateAddProductGrid(object sender, RoutedEventArgs e)
+        {
+            buttonClickGrid.Children.Clear();
+
+            Grid addProductGrid = new Grid();
+            addProductGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            addProductGrid.RowDefinitions.Add(new RowDefinition());
+            addProductGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            addProductGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+            buttonClickGrid.Children.Add(addProductGrid);
+
+            TextBlock changeProductsHeader = Projektarbete.ShopUtils.CreateTextBlock("Lägg till produkt", 16, TextAlignment.Center);
+            addProductGrid.Children.Add(changeProductsHeader);
+            Grid.SetRow(changeProductsHeader, 0);
+            Grid.SetColumnSpan(changeProductsHeader, 2);
+
+            Grid productPropertiesGrid = new Grid();
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productPropertiesGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            productPropertiesGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            addProductGrid.Children.Add(productPropertiesGrid);
+            Grid.SetRow(productPropertiesGrid, 1);
+            Grid.SetColumn(productPropertiesGrid, 0);
+
+            TextBlock editProductHeader = Projektarbete.ShopUtils.CreateTextBlock("Produktens egenskaper", 14, TextAlignment.Center);
+            productPropertiesGrid.Children.Add(editProductHeader);
+            Grid.SetColumnSpan(editProductHeader, 2);
+
+            TextBlock editNameText = Projektarbete.ShopUtils.CreateTextBlock("Namn", 10, TextAlignment.Left);
+            productPropertiesGrid.Children.Add(editNameText);
+            Grid.SetRow(editNameText, 1);
+            Grid.SetColumn(editNameText, 0);
+
+            nameBox = new TextBox
+            {
+                Margin = new Thickness(5),
+                Background = textBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Width = 200
+            };
+            productPropertiesGrid.Children.Add(nameBox);
+            nameBox.HorizontalAlignment = HorizontalAlignment.Left;
+            Grid.SetRow(nameBox, 1);
+            Grid.SetColumn(nameBox, 1);
+            
+            TextBlock editDescriptionText = Projektarbete.ShopUtils.CreateTextBlock("Beskrivning", 10, TextAlignment.Left);
+            productPropertiesGrid.Children.Add(editDescriptionText);
+            Grid.SetRow(editDescriptionText, 2);
+            Grid.SetColumn(editDescriptionText, 0);
+
+            descriptionBox = new TextBox
+            {
+                Margin = new Thickness(5),
+                Background = textBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Width = 200
+            };
+            productPropertiesGrid.Children.Add(descriptionBox);
+            descriptionBox.HorizontalAlignment = HorizontalAlignment.Left;
+            Grid.SetRow(descriptionBox, 2);
+            Grid.SetColumn(descriptionBox, 1);
+
+            TextBlock editPriceText = Projektarbete.ShopUtils.CreateTextBlock("Pris", 10, TextAlignment.Left);
+            productPropertiesGrid.Children.Add(editPriceText);
+            Grid.SetRow(editPriceText, 3);
+            Grid.SetColumn(editPriceText, 0);
+
+            priceBox = new TextBox
+            {
+                Margin = new Thickness(5),
+                Background = textBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Width = 200
+            };
+            productPropertiesGrid.Children.Add(priceBox);
+            priceBox.HorizontalAlignment = HorizontalAlignment.Left;
+            Grid.SetRow(priceBox, 3);
+            Grid.SetColumn(priceBox, 1);
+
+            TextBlock editCategoryText = Projektarbete.ShopUtils.CreateTextBlock("Kategori", 10, TextAlignment.Left);
+            productPropertiesGrid.Children.Add(editCategoryText);
+            Grid.SetRow(editCategoryText, 4);
+            Grid.SetColumn(editCategoryText, 0);
+
+            categoryBox = new TextBox
+            {
+                Margin = new Thickness(5),
+                Background = textBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Width = 200
+            };
+            productPropertiesGrid.Children.Add(categoryBox);
+            categoryBox.HorizontalAlignment = HorizontalAlignment.Left;
+            Grid.SetRow(categoryBox, 4);
+            Grid.SetColumn(categoryBox, 1);
+
+            TextBlock editPathText = Projektarbete.ShopUtils.CreateTextBlock("Bild", 10, TextAlignment.Left);
+            productPropertiesGrid.Children.Add(editPathText);
+            Grid.SetRow(editPathText, 5);
+            Grid.SetColumn(editPathText, 0);
+
+            pathBox = new TextBox
+            {
+                Margin = new Thickness(5),
+                Background = textBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Width = 200
+            };
+            productPropertiesGrid.Children.Add(pathBox);
+            pathBox.HorizontalAlignment = HorizontalAlignment.Left;
+            Grid.SetRow(pathBox, 5);
+            Grid.SetColumn(pathBox, 1);
+
+            Button addProductButton = new Button
+            {
+                Content = "Lägg till produkt",
+                Margin = new Thickness(5),
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                MaxWidth = 120
+            };
+            productPropertiesGrid.Children.Add(addProductButton);
+            Grid.SetRow(addProductButton, 6);
+            Grid.SetColumnSpan(addProductButton, 2);
+            addProductButton.Click += AddProductClick;
+        }
+
+        private void AddProductClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Projektarbete.Product product = new Projektarbete.Product
+                {
+                    Title = nameBox.Text,
+                    Description = descriptionBox.Text,
+                    Price = decimal.Parse(priceBox.Text),
+                    ProductImage = pathBox.Text,
+                    Category = categoryBox.Text
+                };
+                productList.Add(product);
+                nameBox.Clear();
+                descriptionBox.Clear();
+                priceBox.Clear();
+                pathBox.Clear();
+                categoryBox.Clear();
+                MessageBox.Show("Produkt tillagd");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Felaktig inmatning");
+            }
+        }
+
+        private void CreateEditProductGrid(object sender, RoutedEventArgs e)
         {
 
             buttonClickGrid.Children.Clear();
