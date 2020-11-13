@@ -4,6 +4,7 @@ using System.Text;
 using Projektarbete;
 using System.IO;
 using System.Text.Json;
+using System.Linq;
 
 namespace AdminShop
 {
@@ -48,6 +49,12 @@ namespace AdminShop
         /// <param name="path">The file path that this instance should be serialized to.</param>
         public static void Serialize<T>(this List<T> data, string path)
         {
+            //Serializing other list types is no problem, though we only want to serialize lists of products or coupons.
+            if(!(data is List<Product> && data is List<Coupon>))
+            {
+                throw new NotImplementedException("This serialization method is only valid for coupon and product lists.");
+            }
+
             using(StreamWriter stream = new StreamWriter(path))
             {
                 var json = JsonSerializer.Serialize(data, new JsonSerializerOptions()
