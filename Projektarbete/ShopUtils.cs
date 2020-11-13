@@ -5,13 +5,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace Projektarbete
 {
     public static class ShopUtils
     {
-        public static string GetFilePath(string fileName) => $@"C:\Windows\Temp\{fileName}";
+        public static string GetFilePath(string fileName) => $@"C:\Windows\Temp\Sebastian_Jonas\{fileName}";
 
         public static void CreateButton(string content, Grid grid, int row, int column, int columnspan, RoutedEventHandler onClick)
         {
@@ -63,8 +64,6 @@ namespace Projektarbete
 
         public static List<Product> DeserializeProducts(string path)
         {
-            if (!File.Exists(path)) File.Create(path).Close();
-
             List<Product> items = new List<Product>();
             using (StreamReader reader = new StreamReader(path))
             {
@@ -90,16 +89,19 @@ namespace Projektarbete
             return categories;
         }
 
-        public static void SaveCart(List<Product> cart)
+        public static void Serialize<T>(this List<T> data, string serializePath)
         {
-            var json = JsonSerializer.Serialize(cart,
-                new JsonSerializerOptions()
-                {
-                    WriteIndented = true
-                });
+            Type dataType = data.GetType().GetGenericArguments().Single();
+            //Serializing other list types is no problem, though we only want to serialize lists of products or coupons.
+            //A secondary option would be to make method overloads for the specific lists we want to use
+            if (dataType != typeof(Product) && dataType != typeof(Coupon))
+            {
+                throw new NotImplementedException("This method should only serialize Products or Coupons.");
+            }
 
-            string path = GetFilePath("Cart.json");
-            File.WriteAllText(path, json);
+            var json = JsonSerializer.Serialize(data, new JsonSerializerOptions() { WriteIndented = true });
+
+            File.WriteAllText(serializePath, json);
         }
 
         public static List<Product> LoadCart()

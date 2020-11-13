@@ -52,7 +52,7 @@ namespace ProjektarbeteTest
                     ProductImage = ""
                 }
             };
-            ShopUtils.SaveCart(preSaveCart);
+            preSaveCart.Serialize(ShopUtils.GetFilePath("Cart.json"));
             List<Product> deserializedCart = ShopUtils.LoadCart();
 
             bool areEqual = deserializedCart.Count == preSaveCart.Count;

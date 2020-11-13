@@ -15,13 +15,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Projektarbete;
 
 namespace AssortmentEditor
 {
     public partial class MainWindow : Window
     {
-        List<Projektarbete.Product> productList = Projektarbete.ShopUtils.DeserializeProducts(@"JSON\Products.json");
-        List<Projektarbete.Coupon> couponList = Projektarbete.Coupon.CouponCodes();
+        List<Product> productList;
+        List<Coupon> couponList;
 
         Grid editGrid;
 
@@ -48,6 +49,15 @@ namespace AssortmentEditor
         {
             System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
+            if (!Directory.Exists($@"C:\Windows\Temp\Sebastian_Jonas"))
+            {
+                Directory.CreateDirectory(@"C:\Windows\Temp\Sebastian_Jonas");
+                Product.CreateProductFile();
+                Coupon.CreateCouponFile();
+            }
+
+            productList = ShopUtils.DeserializeProducts(ShopUtils.GetFilePath("Products.json"));
+            couponList = Coupon.DeserializeCoupons();
             #region Custom brushes
             // declare a brushconverter to convert a hex color code string to a Brush color
             BrushConverter brushConverter = new System.Windows.Media.BrushConverter();
@@ -312,6 +322,7 @@ namespace AssortmentEditor
                 priceBox.Clear();
                 pathBox.Clear();
                 categoryBox.Clear();
+                productList.Serialize(ShopUtils.GetFilePath("Products.json"));
                 MessageBox.Show("Produkt tillagd");
             }
             catch (FormatException)
@@ -538,11 +549,12 @@ namespace AssortmentEditor
                 productList[editProductListBox.SelectedIndex].Price = decimal.Parse(priceBox.Text);
                 productList[editProductListBox.SelectedIndex].Category = categoryBox.Text;
                 productList[editProductListBox.SelectedIndex].ProductImage = pathBox.Text;
+                productList.Serialize(ShopUtils.GetFilePath("Products.json"));
                 UpdateProductListBox();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show("Felaktig inmatning");
+                MessageBox.Show("Felaktig inmatning: " + ex.Message);
             }
         }
 
