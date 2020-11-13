@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Projektarbete;
+using System.IO;
+using System.Text.Json;
 
 namespace AdminShop
 {
@@ -39,34 +41,52 @@ namespace AdminShop
 
         }
 
-        public static Coupon ModifyCoupon(Coupon coupon)
+        /// <summary>
+        /// Serializes the data from the calling list instance to the specified file path in parameters.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path">The file path that this instance should be serialized to.</param>
+        public static void Serialize<T>(this List<T> data, string path)
         {
-            return null;
+            using(StreamWriter stream = new StreamWriter(path))
+            {
+                var json = JsonSerializer.Serialize(data, new JsonSerializerOptions()
+                {
+                    WriteIndented = true,
+                });
+                stream.Write(json);
+                stream.Close();
+            }
         }
 
-        public static void Exempel()
+        [Obsolete("Ta bort denna innan vi skickar in det slutliga projektet :).")]
+        public static void SerializeExample()
         {
-            new Product()
+            List<Product> products = new List<Product>()
             {
-                Title = "Test",
-                Price = 5.0M,
-                Description = "Test produkt",
-                Count = int.MaxValue - 1,
-                Category = "Test"
-            }.AddProduct();
-
-            //vs.
-
-            Product p = new Product()
-            {
-                Title = "Test",
-                Price = 5.0M,
-                Description = "Test produkt",
-                Count = int.MaxValue - 1,
-                Category = "Test"
+                new Product()
+                {
+                    //Product properties
+                },
+                new Product()
+                {
+                    //Product properties
+                }
             };
+            products.Serialize(@"JSON\Products.json");
 
-            Methods.AddProduct(p);
+            List<Coupon> coupons = new List<Coupon>()
+            {
+                new Coupon()
+                {
+                    //Coupon properties
+                },
+                new Coupon()
+                {
+                    //Coupon properties
+                }
+            };
+            coupons.Serialize(@"JSON\Coupons.json");
         }
     }
 }
