@@ -199,7 +199,7 @@ namespace AssortmentEditor
             nameBox.HorizontalAlignment = HorizontalAlignment.Left;
             Grid.SetRow(nameBox, 1);
             Grid.SetColumn(nameBox, 1);
-            
+
             TextBlock editDescriptionText = Projektarbete.ShopUtils.CreateTextBlock("Beskrivning", 10, TextAlignment.Left);
             productPropertiesGrid.Children.Add(editDescriptionText);
             Grid.SetRow(editDescriptionText, 2);
@@ -294,6 +294,10 @@ namespace AssortmentEditor
         {
             try
             {
+                if (!File.Exists("Images/" + pathBox.Text))
+                {
+                    throw new FileNotFoundException();
+                }
                 Projektarbete.Product product = new Projektarbete.Product
                 {
                     Title = nameBox.Text,
@@ -310,9 +314,13 @@ namespace AssortmentEditor
                 categoryBox.Clear();
                 MessageBox.Show("Produkt tillagd");
             }
-            catch (Exception)
+            catch (FormatException)
             {
-                MessageBox.Show("Felaktig inmatning");
+                MessageBox.Show("Felaktig inmatning för pris");
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show("Bilden kunde inte hittas");
             }
         }
 
@@ -334,6 +342,29 @@ namespace AssortmentEditor
             Grid.SetRow(changeProductsHeader, 0);
             Grid.SetColumnSpan(changeProductsHeader, 2);
 
+            Grid productGrid = new Grid();
+            productGrid.RowDefinitions.Add(new RowDefinition ());
+            productGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            productGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            editProductGrid.Children.Add(productGrid);
+            Grid.SetRow(productGrid, 1);
+            Grid.SetColumn(productGrid, 0);
+            productGrid.ShowGridLines = true;
+
+            Button removeProductButton = new Button
+            {
+                Content = "Ta bort vald produkt",
+                Margin = new Thickness(5, 5, 5, 100),
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                MaxWidth = 120,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+            productGrid.Children.Add(removeProductButton);
+            Grid.SetRow(removeProductButton, 1);
+            Grid.SetColumn(removeProductButton, 0);
+            removeProductButton.Click += RemoveProductClick;
+
             editProductListBox = new ListBox
             {
                 Margin = new Thickness(5),
@@ -346,8 +377,8 @@ namespace AssortmentEditor
                 BorderThickness = new Thickness(0),
                 FontWeight = FontWeights.SemiBold
             };
-            editProductGrid.Children.Add(editProductListBox);
-            Grid.SetRow(editProductListBox, 1);
+            productGrid.Children.Add(editProductListBox);
+            Grid.SetRow(editProductListBox, 0);
             Grid.SetColumn(editProductListBox, 0);
             UpdateProductListBox();
             editProductListBox.SelectionChanged += SetBoxText;
@@ -477,6 +508,25 @@ namespace AssortmentEditor
             Grid.SetRow(saveProductChanges, 6);
             Grid.SetColumnSpan(saveProductChanges, 2);
             saveProductChanges.Click += SaveProductChangesClick;
+        }
+
+        private void RemoveProductClick(object sender, RoutedEventArgs e)
+        {
+            if (editProductListBox.SelectedIndex != -1)
+            {
+                productList.RemoveAt(editProductListBox.SelectedIndex);
+                UpdateProductListBox();
+                nameBox.Clear();
+                descriptionBox.Clear();
+                priceBox.Clear();
+                pathBox.Clear();
+                categoryBox.Clear();
+                MessageBox.Show("Produkt borttagen");
+            }
+            else
+            {
+                MessageBox.Show("Ingen produkt vald");
+            }
         }
 
         private void SaveProductChangesClick(object sender, RoutedEventArgs e)

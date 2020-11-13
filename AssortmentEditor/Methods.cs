@@ -6,7 +6,7 @@ using System.IO;
 using System.Text.Json;
 using System.Linq;
 
-namespace AdminShop
+namespace AssortmentEditor
 {
     //Temporärt namn - vi byter till nåt rimligare senare, tänkte bara ha det så här för tillfället
     public static class Methods
