@@ -6,16 +6,17 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Data;
+using System.IO;
 
 namespace Projektarbete
 {
     public partial class MainWindow : Window
     {
-        private List<Product> productList = ShopUtils.DeserializeProducts(@"JSON\Products.json");
-        private List<Product> shoppingCart = ShopUtils.LoadCart();
+        private List<Product> productList;
+        private List<Product> shoppingCart;
         private List<Product> searchTermList = new List<Product>();
         private List<string> categoryList = new List<string>();
-        private List<Coupon> couponList = Coupon.CouponCodes();
+        private List<Coupon> couponList;
 
         private ListBox cartListBox;
         private ListBox productListBox;
@@ -49,6 +50,16 @@ namespace Projektarbete
         private void Start()
         {
             System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+            if (!Directory.Exists($@"C:\Windows\Temp\Sebastian_Jonas"))
+            {
+                Directory.CreateDirectory(@"C:\Windows\Temp\Sebastian_Jonas");
+                Product.CreateProductFile();
+                Coupon.CreateCouponFile();
+            }
+
+            productList = ShopUtils.DeserializeProducts(ShopUtils.GetFilePath("Products.json"));
+            shoppingCart = ShopUtils.LoadCart();
+            couponList = Coupon.DeserializeCoupons();
 
             #region Custom brushes
             // declare a brushconverter to convert a hex color code string to a Brush color
@@ -307,7 +318,8 @@ namespace Projektarbete
 
         private void SaveCartClick(object sender, RoutedEventArgs e)
         {
-            ShopUtils.SaveCart(this.shoppingCart);
+            string path = ShopUtils.GetFilePath("Cart.json");
+            shoppingCart.Serialize(path);
         }
 
         private void ShowReceipt(object sender, RoutedEventArgs e)
@@ -462,7 +474,7 @@ namespace Projektarbete
             //This will update our coupon if the discount will leave the user with a better price than before
             if (validCoupon && currentCoupon != null)
             {
-                Coupon compare = Coupon.CouponCodes().First(x => x.Code == input);
+                Coupon compare = Coupon.DeserializeCoupons().First(x => x.Code == input);
                 if (compare.Discount < currentCoupon.Discount)
                 {
                     currentCoupon = compare;
@@ -474,7 +486,7 @@ namespace Projektarbete
 
             }
 
-            currentCoupon = validCoupon ? Coupon.CouponCodes().First(x => x.Code == input) : null;
+            currentCoupon = validCoupon ? Coupon.DeserializeCoupons().First(x => x.Code == input) : null;
 
             hasDiscount = currentCoupon != null;
 
