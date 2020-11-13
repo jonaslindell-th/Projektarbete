@@ -318,7 +318,7 @@ namespace AssortmentEditor
                 priceBox.Clear();
                 pathBox.Clear();
                 categoryBox.Clear();
-                productList.Serialize(@"JSON\Products.json");
+                productList.Serialize(ShopUtils.GetFilePath("Products.json"));
                 MessageBox.Show("Produkt tillagd");
             }
             catch (Exception)
@@ -499,7 +499,7 @@ namespace AssortmentEditor
                 productList[editProductListBox.SelectedIndex].Price = decimal.Parse(priceBox.Text);
                 productList[editProductListBox.SelectedIndex].Category = categoryBox.Text;
                 productList[editProductListBox.SelectedIndex].ProductImage = pathBox.Text;
-                productList.Serialize(@"JSON\Products.json");
+                productList.Serialize(ShopUtils.GetFilePath("Products.json"));
                 UpdateProductListBox();
             }
             catch (Exception ex)
