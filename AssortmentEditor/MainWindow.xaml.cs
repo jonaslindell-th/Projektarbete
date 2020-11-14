@@ -21,8 +21,8 @@ namespace AssortmentEditor
 {
     public partial class MainWindow : Window
     {
-        List<Product> productList;
-        List<Coupon> couponList;
+        List<Product> productList = ShopUtils.DeserializeProducts(ShopUtils.GetFilePath("Products.json"));
+        List<Coupon> couponList = Coupon.DeserializeCoupons();
 
         Grid editGrid;
 
@@ -32,6 +32,8 @@ namespace AssortmentEditor
         Brush textBoxBrush;
 
         ListBox editProductListBox;
+        ListBox editCouponListBox;
+        ListBox pictureListBox;
 
         TextBox nameBox;
         TextBox descriptionBox;
@@ -39,6 +41,11 @@ namespace AssortmentEditor
         TextBox categoryBox;
         TextBox pathBox;
 
+        TextBox codeBox;
+        TextBox discountBox;
+
+        Grid imageGrid;
+        string[] imageArray = new[] { "Dairy.jpg", "Fish.jpg", "Meat.jpg", "Shelf.jpg", "Veg.jpg" };
         public MainWindow()
         {
             InitializeComponent();
@@ -56,15 +63,12 @@ namespace AssortmentEditor
                 Coupon.CreateCouponFile();
             }
 
-            productList = ShopUtils.DeserializeProducts(ShopUtils.GetFilePath("Products.json"));
-            couponList = Coupon.DeserializeCoupons();
             #region Custom brushes
             // declare a brushconverter to convert a hex color code string to a Brush color
             BrushConverter brushConverter = new System.Windows.Media.BrushConverter();
             Brush backgroundBrush = (Brush)brushConverter.ConvertFromString("#2F3136");
             listBoxBrush = (Brush)brushConverter.ConvertFromString("#36393F");
             textBoxBrush = (Brush)brushConverter.ConvertFromString("#40444B");
-            Brush expanderBrush = (Brush)brushConverter.ConvertFromString("#202225");
             #endregion
 
             // Window options
@@ -131,29 +135,182 @@ namespace AssortmentEditor
 
             Button editCoupons = new Button
             {
-                Content = "Ändra kuponger",
+                Content = "Ändra/lägg till kuponger",
                 Margin = new Thickness(5),
                 BorderThickness = new Thickness(0),
                 FontWeight = FontWeights.SemiBold,
                 Padding = new Thickness(10)
             };
             buttonPanel.Children.Add(editCoupons);
-
-            Button addCoupon = new Button
-            {
-                Content = "Lägg till kupong",
-                Margin = new Thickness(5),
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Padding = new Thickness(10)
-            };
-            buttonPanel.Children.Add(addCoupon);
-            editProducts.Click += CreateEditProductGrid;
+            editCoupons.Click += CreateEditCouponsGrid;
 
             buttonClickGrid = new Grid();
             editGrid.Children.Add(buttonClickGrid);
             Grid.SetRow(buttonClickGrid, 1);
             Grid.SetColumn(buttonClickGrid, 1);
+        }
+
+        private void CreateEditCouponsGrid(object sender, RoutedEventArgs e)
+        {
+            buttonClickGrid.Children.Clear();
+
+            Grid editCouponGrid = new Grid();
+            editCouponGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            editCouponGrid.RowDefinitions.Add(new RowDefinition());
+            editCouponGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            editCouponGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+            buttonClickGrid.Children.Add(editCouponGrid);
+
+            TextBlock changeCouponHeader = Projektarbete.ShopUtils.CreateTextBlock("Ändra kuponger", 16, TextAlignment.Center);
+            editCouponGrid.Children.Add(changeCouponHeader);
+            Grid.SetRow(changeCouponHeader, 0);
+            Grid.SetColumnSpan(changeCouponHeader, 2);
+
+            Grid couponGrid = new Grid();
+            couponGrid.RowDefinitions.Add(new RowDefinition());
+            couponGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            couponGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            editCouponGrid.Children.Add(couponGrid);
+            Grid.SetRow(couponGrid, 1);
+            Grid.SetColumn(couponGrid, 0);
+
+            Button removeCouponButton = new Button
+            {
+                Content = "Ta bort vald kupong",
+                Margin = new Thickness(5, 5, 5, 100),
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                MaxWidth = 120,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+            couponGrid.Children.Add(removeCouponButton);
+            Grid.SetRow(removeCouponButton, 1);
+            Grid.SetColumn(removeCouponButton, 0);
+            removeCouponButton.Click += RemoveCouponClick;
+
+            editCouponListBox = new ListBox
+            {
+                Margin = new Thickness(5),
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                MaxHeight = 425,
+                MaxWidth = 300,
+                Background = listBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold
+            };
+            couponGrid.Children.Add(editCouponListBox);
+            Grid.SetRow(editCouponListBox, 0);
+            Grid.SetColumn(editCouponListBox, 0);
+            UpdateCouponListBox();
+            editCouponListBox.SelectionChanged += AddSelectedCouponToTextBox;
+
+            Grid couponPropertiesGrid = new Grid();
+            couponPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            couponPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            couponPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            couponPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            couponPropertiesGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            couponPropertiesGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            editCouponGrid.Children.Add(couponPropertiesGrid);
+            Grid.SetRow(couponPropertiesGrid, 1);
+            Grid.SetColumn(couponPropertiesGrid, 1);
+
+            TextBlock editCouponHeader = Projektarbete.ShopUtils.CreateTextBlock("Kupongens egenskaper", 14, TextAlignment.Center);
+            couponPropertiesGrid.Children.Add(editCouponHeader);
+            Grid.SetColumnSpan(editCouponHeader, 2);
+
+            TextBlock editCodeText = Projektarbete.ShopUtils.CreateTextBlock("Kod", 10, TextAlignment.Left);
+            couponPropertiesGrid.Children.Add(editCodeText);
+            Grid.SetRow(editCodeText, 1);
+            Grid.SetColumn(editCodeText, 0);
+
+            codeBox = new TextBox
+            {
+                Margin = new Thickness(5),
+                Background = textBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Width = 200
+            };
+            couponPropertiesGrid.Children.Add(codeBox);
+            codeBox.HorizontalAlignment = HorizontalAlignment.Left;
+            Grid.SetRow(codeBox, 1);
+            Grid.SetColumn(codeBox, 1);
+
+            TextBlock editDiscountText = Projektarbete.ShopUtils.CreateTextBlock("Rabatt", 10, TextAlignment.Left);
+            couponPropertiesGrid.Children.Add(editDiscountText);
+            Grid.SetRow(editDiscountText, 2);
+            Grid.SetColumn(editDiscountText, 0);
+
+            discountBox = new TextBox
+            {
+                Margin = new Thickness(5),
+                Background = textBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Width = 200
+            };
+            couponPropertiesGrid.Children.Add(discountBox);
+            discountBox.HorizontalAlignment = HorizontalAlignment.Left;
+            Grid.SetRow(discountBox, 2);
+            Grid.SetColumn(discountBox, 2);
+
+            Button addNewCoupon = new Button
+            {
+                Content = "Lägg till ny kupong",
+                Margin = new Thickness(5),
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                MaxWidth = 120,
+                Padding = new Thickness(5, 2, 5, 2)
+            };
+            couponPropertiesGrid.Children.Add(addNewCoupon);
+            Grid.SetRow(addNewCoupon, 3);
+            addNewCoupon.Click += AddNewCouponClick;
+
+            Button saveCouponChanges = new Button
+            {
+                Content = "Spara ändringar",
+                Margin = new Thickness(5),
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                MaxWidth = 120,
+                Padding = new Thickness(5, 2, 5, 2)
+            };
+            couponPropertiesGrid.Children.Add(saveCouponChanges);
+            Grid.SetRow(saveCouponChanges, 3);
+            Grid.SetColumn(saveCouponChanges, 1);
+            saveCouponChanges.Click += SaveCouponChangesClick;
+        }
+
+        private void AddNewCouponClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void RemoveCouponClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SaveCouponChangesClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AddSelectedCouponToTextBox(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void UpdateCouponListBox()
+        {
+
         }
 
         private void CreateAddProductGrid(object sender, RoutedEventArgs e)
@@ -168,10 +325,60 @@ namespace AssortmentEditor
 
             buttonClickGrid.Children.Add(addProductGrid);
 
-            TextBlock changeProductsHeader = Projektarbete.ShopUtils.CreateTextBlock("Lägg till produkt", 16, TextAlignment.Center);
-            addProductGrid.Children.Add(changeProductsHeader);
-            Grid.SetRow(changeProductsHeader, 0);
-            Grid.SetColumnSpan(changeProductsHeader, 2);
+            TextBlock addProductHeader = Projektarbete.ShopUtils.CreateTextBlock("Urval för bilder", 14, TextAlignment.Center);
+            addProductGrid.Children.Add(addProductHeader);
+            Grid.SetRow(addProductHeader, 0);
+            Grid.SetColumn(addProductHeader, 1);
+
+            Grid choosePictureGrid = new Grid();
+            choosePictureGrid.RowDefinitions.Add(new RowDefinition());
+            choosePictureGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            choosePictureGrid.RowDefinitions.Add(new RowDefinition());
+            choosePictureGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            addProductGrid.Children.Add(choosePictureGrid);
+            Grid.SetRow(choosePictureGrid, 1);
+            Grid.SetColumn(choosePictureGrid, 1);
+            choosePictureGrid.ShowGridLines = true;
+
+
+            imageGrid = new Grid();
+            choosePictureGrid.Children.Add(imageGrid);
+            Grid.SetRow(imageGrid, 0);
+            Grid.SetColumn(imageGrid, 0);
+
+            Button addToImageBox = new Button
+            {
+                Content = "Lägg till sökväg",
+                Margin = new Thickness(5),
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                MaxWidth = 120
+            };
+            choosePictureGrid.Children.Add(addToImageBox);
+            Grid.SetRow(addToImageBox, 1);
+            addToImageBox.Click += AddToImageBox;
+
+            pictureListBox = new ListBox
+            {
+                Margin = new Thickness(5),
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                MaxHeight = 425,
+                MaxWidth = 300,
+                Background = listBoxBrush,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold
+            };
+            choosePictureGrid.Children.Add(pictureListBox);
+            Grid.SetRow(pictureListBox, 2);
+            Grid.SetColumn(pictureListBox, 0);
+            pictureListBox.SelectionChanged += DisplayPicture;
+
+            foreach (string examplePicture in imageArray)
+            {
+                pictureListBox.Items.Add(examplePicture);
+            }
 
             Grid productPropertiesGrid = new Grid();
             productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -300,6 +507,24 @@ namespace AssortmentEditor
             addProductButton.Click += AddProductClick;
         }
 
+        private void AddToImageBox(object sender, RoutedEventArgs e)
+        {
+            if (pictureListBox.SelectedIndex != -1)
+            {
+                pathBox.Text = imageArray[pictureListBox.SelectedIndex];
+            }
+        }
+
+        private void DisplayPicture(object sender, SelectionChangedEventArgs e)
+        {
+            if (pictureListBox.SelectedIndex != -1)
+            {
+                imageGrid.Children.Clear();
+                Image currentImage = CreateImages("SampleImages/" + imageArray[pictureListBox.SelectedIndex]);
+                imageGrid.Children.Add(currentImage);
+            }
+        }
+
         private void AddProductClick(object sender, RoutedEventArgs e)
         {
             try
@@ -308,7 +533,7 @@ namespace AssortmentEditor
                 {
                     throw new FileNotFoundException();
                 }
-                Projektarbete.Product product = new Projektarbete.Product
+                Product product = new Product
                 {
                     Title = nameBox.Text,
                     Description = descriptionBox.Text,
@@ -354,13 +579,12 @@ namespace AssortmentEditor
             Grid.SetColumnSpan(changeProductsHeader, 2);
 
             Grid productGrid = new Grid();
-            productGrid.RowDefinitions.Add(new RowDefinition ());
+            productGrid.RowDefinitions.Add(new RowDefinition());
             productGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             productGrid.ColumnDefinitions.Add(new ColumnDefinition());
             editProductGrid.Children.Add(productGrid);
             Grid.SetRow(productGrid, 1);
             Grid.SetColumn(productGrid, 0);
-            productGrid.ShowGridLines = true;
 
             Button removeProductButton = new Button
             {
@@ -392,7 +616,7 @@ namespace AssortmentEditor
             Grid.SetRow(editProductListBox, 0);
             Grid.SetColumn(editProductListBox, 0);
             UpdateProductListBox();
-            editProductListBox.SelectionChanged += SetBoxText;
+            editProductListBox.SelectionChanged += AddSelectedProductToTextBox;
 
             Grid productPropertiesGrid = new Grid();
             productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -532,6 +756,7 @@ namespace AssortmentEditor
                 priceBox.Clear();
                 pathBox.Clear();
                 categoryBox.Clear();
+                productList.Serialize(ShopUtils.GetFilePath("Products.json"));
                 MessageBox.Show("Produkt borttagen");
             }
             else
@@ -549,7 +774,7 @@ namespace AssortmentEditor
                 productList[editProductListBox.SelectedIndex].Price = decimal.Parse(priceBox.Text);
                 productList[editProductListBox.SelectedIndex].Category = categoryBox.Text;
                 productList[editProductListBox.SelectedIndex].ProductImage = pathBox.Text;
-                productList.Serialize(ShopUtils.GetFilePath("Products.json"));
+                //productList.Serialize(ShopUtils.GetFilePath("Products.json"));
                 UpdateProductListBox();
             }
             catch (Exception ex)
@@ -558,7 +783,7 @@ namespace AssortmentEditor
             }
         }
 
-        private void SetBoxText(object sender, SelectionChangedEventArgs e)
+        private void AddSelectedProductToTextBox(object sender, SelectionChangedEventArgs e)
         {
             if (editProductListBox.SelectedIndex != -1)
             {
@@ -577,6 +802,23 @@ namespace AssortmentEditor
             {
                 editProductListBox.Items.Add(product.Title + " (" + product.Price + ") kr");
             }
+        }
+
+        private Image CreateImages(string filePath)
+        {
+            ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
+            Image image = new Image
+            {
+                Source = source,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(5),
+                MaxHeight = 300,
+                MaxWidth = 300
+            };
+            image.Stretch = Stretch.UniformToFill;
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+            return image;
         }
     }
 }

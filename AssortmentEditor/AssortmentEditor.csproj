@@ -5,7 +5,11 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
-
+	<ItemGroup>
+		<Content Include="SampleImages\**">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Projektarbete\Projektarbete.csproj" />
   </ItemGroup>
