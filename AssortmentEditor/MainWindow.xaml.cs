@@ -24,28 +24,18 @@ namespace AssortmentEditor
         List<Product> productList = ShopUtils.DeserializeProducts(ShopUtils.GetFilePath("Products.json"));
         List<Coupon> couponList = Coupon.DeserializeCoupons();
 
-        Grid editGrid;
-
         Grid buttonClickGrid;
 
-        Brush listBoxBrush;
-        Brush textBoxBrush;
+        Brush listBoxBrush, textBoxBrush;
 
-        ListBox editProductListBox;
-        ListBox editCouponListBox;
-        ListBox pictureListBox;
+        ListBox editProductListBox, pictureListBox, editCouponListBox;
 
-        TextBox nameBox;
-        TextBox descriptionBox;
-        TextBox priceBox;
-        TextBox categoryBox;
-        TextBox pathBox;
-
-        TextBox codeBox;
-        TextBox discountBox;
+        TextBox nameBox, descriptionBox, priceBox, categoryBox, pathBox, codeBox, discountBox;
 
         Grid imageGrid;
+
         string[] imageArray = new[] { "Dairy.jpg", "Fish.jpg", "Meat.jpg", "Shelf.jpg", "Veg.jpg" };
+
         public MainWindow()
         {
             InitializeComponent();
@@ -86,68 +76,51 @@ namespace AssortmentEditor
             Content = root;
 
             // Main grid
-            Grid selectionGrid = new Grid();
-            root.Content = selectionGrid;
-            //mainGrid.Margin = new Thickness(5);
-            selectionGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            //selectionGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            selectionGrid.RowDefinitions.Add(new RowDefinition());
-            selectionGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            selectionGrid.Background = backgroundBrush;
+            Grid mainGrid = new Grid();
+            root.Content = mainGrid;
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            mainGrid.RowDefinitions.Add(new RowDefinition());
+            mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            mainGrid.Background = backgroundBrush;
 
-            TextBlock headingTextBlock = Projektarbete.ShopUtils.CreateTextBlock("Sortiment hanteraren", 18, TextAlignment.Center);
-            selectionGrid.Children.Add(headingTextBlock);
+            TextBlock headingTextBlock = ShopUtils.CreateTextBlock("Sortiment hanteraren", 18, TextAlignment.Center);
+            mainGrid.Children.Add(headingTextBlock);
             Grid.SetRow(headingTextBlock, 0);
             Grid.SetColumnSpan(headingTextBlock, 3);
 
-            editGrid = new Grid();
-            Grid.SetRow(editGrid, 2);
-            editGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            editGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            editGrid.RowDefinitions.Add(new RowDefinition());
-            selectionGrid.Children.Add(editGrid);
-
-            StackPanel buttonPanel = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
-            editGrid.Children.Add(buttonPanel);
-            Grid.SetColumn(buttonPanel, 0);
-
-            Button editProducts = new Button
-            {
-                Content = "Ändra produkter",
-                Margin = new Thickness(5),
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Padding = new Thickness(10)
-            };
-            buttonPanel.Children.Add(editProducts);
-            editProducts.Click += CreateEditProductGrid;
-
-            Button addProduct = new Button
-            {
-                Content = "Lägg till produkt",
-                Margin = new Thickness(5),
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Padding = new Thickness(10)
-            };
-            buttonPanel.Children.Add(addProduct);
-            addProduct.Click += CreateAddProductGrid;
-
-            Button editCoupons = new Button
-            {
-                Content = "Ändra/lägg till kuponger",
-                Margin = new Thickness(5),
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Padding = new Thickness(10)
-            };
-            buttonPanel.Children.Add(editCoupons);
-            editCoupons.Click += CreateEditCouponsGrid;
+            // first column contains buttons which determines what grid to create, the second column contains a class field grid "buttonClickGrid" which is the parent grid for the eventhandlers nested grids
+            Grid selectionGrid = new Grid();
+            Grid.SetRow(selectionGrid, 2);
+            selectionGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            selectionGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            selectionGrid.RowDefinitions.Add(new RowDefinition());
+            mainGrid.Children.Add(selectionGrid);
 
             buttonClickGrid = new Grid();
-            editGrid.Children.Add(buttonClickGrid);
+            selectionGrid.Children.Add(buttonClickGrid);
             Grid.SetRow(buttonClickGrid, 1);
             Grid.SetColumn(buttonClickGrid, 1);
+
+            // using a stackpanel to save some space defining a grid
+            StackPanel buttonPanel = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+            selectionGrid.Children.Add(buttonPanel);
+            Grid.SetColumn(buttonPanel, 0);
+
+            Button editProductButton = AssortmentUtils.CreateButton("Ändra produkter");
+            editProductButton.Padding = new Thickness(10);
+            buttonPanel.Children.Add(editProductButton);
+            editProductButton.Click += CreateEditProductGrid;
+
+            Button addProductButton = AssortmentUtils.CreateButton("Lägg till produkt");
+            addProductButton.Padding = new Thickness(10);
+            buttonPanel.Children.Add(addProductButton);
+            addProductButton.Click += CreateAddProductGrid;
+
+            Button EditCouponsButton = AssortmentUtils.CreateButton("Lägg till/Ändra kuponger");
+            EditCouponsButton.Padding = new Thickness(10);
+            buttonPanel.Children.Add(EditCouponsButton);
+            EditCouponsButton.Click += CreateEditCouponsGrid;
+
         }
 
         private void CreateEditCouponsGrid(object sender, RoutedEventArgs e)
@@ -162,7 +135,7 @@ namespace AssortmentEditor
 
             buttonClickGrid.Children.Add(editCouponGrid);
 
-            TextBlock changeCouponHeader = Projektarbete.ShopUtils.CreateTextBlock("Ändra kuponger", 16, TextAlignment.Center);
+            TextBlock changeCouponHeader = ShopUtils.CreateTextBlock("Ändra kuponger", 16, TextAlignment.Center);
             editCouponGrid.Children.Add(changeCouponHeader);
             Grid.SetRow(changeCouponHeader, 0);
             Grid.SetColumnSpan(changeCouponHeader, 2);
@@ -375,9 +348,9 @@ namespace AssortmentEditor
             Grid.SetColumn(pictureListBox, 0);
             pictureListBox.SelectionChanged += DisplayPicture;
 
-            foreach (string examplePicture in imageArray)
+            for (int i = 0; i < imageArray.Length; i++)
             {
-                pictureListBox.Items.Add(examplePicture);
+                pictureListBox.Items.Add("Bildförslag " + (i + 1));
             }
 
             Grid productPropertiesGrid = new Grid();
@@ -520,7 +493,7 @@ namespace AssortmentEditor
             if (pictureListBox.SelectedIndex != -1)
             {
                 imageGrid.Children.Clear();
-                Image currentImage = CreateImages("SampleImages/" + imageArray[pictureListBox.SelectedIndex]);
+                Image currentImage = CreateImage("SampleImages/" + imageArray[pictureListBox.SelectedIndex]);
                 imageGrid.Children.Add(currentImage);
             }
         }
@@ -632,11 +605,10 @@ namespace AssortmentEditor
             Grid.SetRow(productPropertiesGrid, 1);
             Grid.SetColumn(productPropertiesGrid, 1);
 
-            TextBlock editProductHeader = Projektarbete.ShopUtils.CreateTextBlock("Produktens egenskaper", 14, TextAlignment.Center);
+            TextBlock editProductHeader = ShopUtils.CreateTextBlock("Produktens egenskaper", 14, TextAlignment.Center);
             productPropertiesGrid.Children.Add(editProductHeader);
-            Grid.SetColumnSpan(editProductHeader, 2);
 
-            TextBlock editNameText = Projektarbete.ShopUtils.CreateTextBlock("Namn", 10, TextAlignment.Left);
+            TextBlock editNameText = ShopUtils.CreateTextBlock("Namn", 10, TextAlignment.Left);
             productPropertiesGrid.Children.Add(editNameText);
             Grid.SetRow(editNameText, 1);
             Grid.SetColumn(editNameText, 0);
@@ -655,7 +627,7 @@ namespace AssortmentEditor
             Grid.SetRow(nameBox, 1);
             Grid.SetColumn(nameBox, 1);
 
-            TextBlock editDescriptionText = Projektarbete.ShopUtils.CreateTextBlock("Beskrivning", 10, TextAlignment.Left);
+            TextBlock editDescriptionText = ShopUtils.CreateTextBlock("Beskrivning", 10, TextAlignment.Left);
             productPropertiesGrid.Children.Add(editDescriptionText);
             Grid.SetRow(editDescriptionText, 2);
             Grid.SetColumn(editDescriptionText, 0);
@@ -674,7 +646,7 @@ namespace AssortmentEditor
             Grid.SetRow(descriptionBox, 2);
             Grid.SetColumn(descriptionBox, 1);
 
-            TextBlock editPriceText = Projektarbete.ShopUtils.CreateTextBlock("Pris", 10, TextAlignment.Left);
+            TextBlock editPriceText = ShopUtils.CreateTextBlock("Pris", 10, TextAlignment.Left);
             productPropertiesGrid.Children.Add(editPriceText);
             Grid.SetRow(editPriceText, 3);
             Grid.SetColumn(editPriceText, 0);
@@ -693,7 +665,7 @@ namespace AssortmentEditor
             Grid.SetRow(priceBox, 3);
             Grid.SetColumn(priceBox, 1);
 
-            TextBlock editCategoryText = Projektarbete.ShopUtils.CreateTextBlock("Kategori", 10, TextAlignment.Left);
+            TextBlock editCategoryText = ShopUtils.CreateTextBlock("Kategori", 10, TextAlignment.Left);
             productPropertiesGrid.Children.Add(editCategoryText);
             Grid.SetRow(editCategoryText, 4);
             Grid.SetColumn(editCategoryText, 0);
@@ -712,7 +684,7 @@ namespace AssortmentEditor
             Grid.SetRow(categoryBox, 4);
             Grid.SetColumn(categoryBox, 1);
 
-            TextBlock editPathText = Projektarbete.ShopUtils.CreateTextBlock("Bild", 10, TextAlignment.Left);
+            TextBlock editPathText = ShopUtils.CreateTextBlock("Bild", 10, TextAlignment.Left);
             productPropertiesGrid.Children.Add(editPathText);
             Grid.SetRow(editPathText, 5);
             Grid.SetColumn(editPathText, 0);
@@ -737,11 +709,11 @@ namespace AssortmentEditor
                 Margin = new Thickness(5),
                 BorderThickness = new Thickness(0),
                 FontWeight = FontWeights.SemiBold,
-                MaxWidth = 120
+                MaxWidth = 120,
+                Padding = new Thickness(5, 1, 5, 1)
             };
             productPropertiesGrid.Children.Add(saveProductChanges);
             Grid.SetRow(saveProductChanges, 6);
-            Grid.SetColumnSpan(saveProductChanges, 2);
             saveProductChanges.Click += SaveProductChangesClick;
         }
 
@@ -804,7 +776,7 @@ namespace AssortmentEditor
             }
         }
 
-        private Image CreateImages(string filePath)
+        private Image CreateImage(string filePath)
         {
             ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
             Image image = new Image
