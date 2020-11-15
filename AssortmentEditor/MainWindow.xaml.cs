@@ -23,17 +23,11 @@ namespace AssortmentEditor
     {
         List<Product> productList = ShopUtils.DeserializeProducts(ShopUtils.GetFilePath("Products.json"));
         List<Coupon> couponList = Coupon.DeserializeCoupons();
-
         Grid buttonClickGrid;
-
         Brush listBoxBrush, textBoxBrush;
-
         ListBox editProductListBox, pictureListBox, editCouponListBox;
-
         TextBox nameBox, descriptionBox, priceBox, categoryBox, pathBox, codeBox, discountBox;
-
         Grid imageGrid;
-
         string[] imageArray = new[] { "Dairy.jpg", "Fish.jpg", "Meat.jpg", "Shelf.jpg", "Veg.jpg" };
 
         public MainWindow()
@@ -80,32 +74,29 @@ namespace AssortmentEditor
             root.Content = mainGrid;
             mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             mainGrid.RowDefinitions.Add(new RowDefinition());
+            // first column contains a stackpanel with buttons which determines what grid to create, the second column contains a class field grid "buttonClickGrid" which is the parent grid for the eventhandlers nested grids
+            mainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
             mainGrid.Background = backgroundBrush;
 
+            // Window heading, always visible
             TextBlock headingTextBlock = ShopUtils.CreateTextBlock("Sortiment hanteraren", 18, TextAlignment.Center);
             mainGrid.Children.Add(headingTextBlock);
             Grid.SetRow(headingTextBlock, 0);
-            Grid.SetColumnSpan(headingTextBlock, 3);
+            Grid.SetColumnSpan(headingTextBlock, 2);
 
-            // first column contains buttons which determines what grid to create, the second column contains a class field grid "buttonClickGrid" which is the parent grid for the eventhandlers nested grids
-            Grid selectionGrid = new Grid();
-            Grid.SetRow(selectionGrid, 2);
-            selectionGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            selectionGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            selectionGrid.RowDefinitions.Add(new RowDefinition());
-            mainGrid.Children.Add(selectionGrid);
+            StackPanel buttonPanel = new StackPanel { VerticalAlignment = VerticalAlignment.Top };
+            mainGrid.Children.Add(buttonPanel);
+            Grid.SetColumn(buttonPanel, 0);
+            Grid.SetRow(buttonPanel, 1);
 
+            // using a empty class field grid to be able to add nested grids from the eventhandlers
             buttonClickGrid = new Grid();
-            selectionGrid.Children.Add(buttonClickGrid);
+            mainGrid.Children.Add(buttonClickGrid);
             Grid.SetRow(buttonClickGrid, 1);
             Grid.SetColumn(buttonClickGrid, 1);
 
-            // using a stackpanel to save some space defining a grid
-            StackPanel buttonPanel = new StackPanel { VerticalAlignment = VerticalAlignment.Top };
-            selectionGrid.Children.Add(buttonPanel);
-            Grid.SetColumn(buttonPanel, 0);
-
+            // each button declares a new grid which is added as buttonClickGrid's only child to display a menu to add/edit/remove coupons and products
             Button editProductButton = AssortmentUtils.CreateButton("Ändra produkter");
             editProductButton.Padding = new Thickness(10);
             buttonPanel.Children.Add(editProductButton);
@@ -125,15 +116,16 @@ namespace AssortmentEditor
 
         private void CreateEditCouponsGrid(object sender, RoutedEventArgs e)
         {
+            // always clear the buttonClickGrid to avoid stacking grids on top of each other
             buttonClickGrid.Children.Clear();
 
+            //Main grid for the coupon grid
             Grid editCouponGrid = new Grid();
             editCouponGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             editCouponGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             editCouponGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             editCouponGrid.ColumnDefinitions.Add(new ColumnDefinition());
             editCouponGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
             buttonClickGrid.Children.Add(editCouponGrid);
 
             TextBlock changeCouponHeader = ShopUtils.CreateTextBlock("Ändra kuponger", 16, TextAlignment.Center);
@@ -148,6 +140,7 @@ namespace AssortmentEditor
             Grid.SetColumn(removeCouponButton, 0);
             removeCouponButton.Click += RemoveCouponClick;
 
+            // listbox to display all editable coupons
             editCouponListBox = new ListBox
             {
                 Margin = new Thickness(5),
@@ -164,9 +157,11 @@ namespace AssortmentEditor
             editCouponGrid.Children.Add(editCouponListBox);
             Grid.SetRow(editCouponListBox, 1);
             Grid.SetColumn(editCouponListBox, 0);
+            // fills the listbox with items from couponList
             UpdateCouponListBox();
             editCouponListBox.SelectionChanged += AddSelectedCouponToTextBox;
 
+            // using a nested grid to set coupon properties in order for the textboxes and listbox to stay leveled at the same height
             Grid couponPropertiesGrid = new Grid();
             couponPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             couponPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -178,11 +173,12 @@ namespace AssortmentEditor
             Grid.SetRow(couponPropertiesGrid, 1);
             Grid.SetColumn(couponPropertiesGrid, 1);
 
+            // add children to the couponPropertiesGrid
             TextBlock editCouponHeader = ShopUtils.CreateTextBlock("Kupongens egenskaper", 14, TextAlignment.Center);
             couponPropertiesGrid.Children.Add(editCouponHeader);
             Grid.SetColumnSpan(editCouponHeader, 2);
 
-            TextBlock editCodeText = Projektarbete.ShopUtils.CreateTextBlock("Kod", 10, TextAlignment.Left);
+            TextBlock editCodeText = ShopUtils.CreateTextBlock("Kod", 10, TextAlignment.Left);
             couponPropertiesGrid.Children.Add(editCodeText);
             Grid.SetRow(editCodeText, 1);
             Grid.SetColumn(editCodeText, 0);
@@ -225,7 +221,7 @@ namespace AssortmentEditor
 
         private void RemoveCouponClick(object sender, RoutedEventArgs e)
         {
-
+  
         }
 
         private void SaveCouponChangesClick(object sender, RoutedEventArgs e)
@@ -247,13 +243,13 @@ namespace AssortmentEditor
         {
             buttonClickGrid.Children.Clear();
 
+            // main grid for adding products
             Grid addProductGrid = new Grid();
             addProductGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             addProductGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             addProductGrid.ColumnDefinitions.Add(new ColumnDefinition());
             addProductGrid.ColumnDefinitions.Add(new ColumnDefinition());
             addProductGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
             buttonClickGrid.Children.Add(addProductGrid);
 
             TextBlock addProductHeader = ShopUtils.CreateTextBlock("Urval för bilder", 14, TextAlignment.Center);
@@ -261,6 +257,7 @@ namespace AssortmentEditor
             Grid.SetRow(addProductHeader, 0);
             Grid.SetColumn(addProductHeader, 1);
 
+            // using a class field grid to be able to set the currently selected image from selectionchanged eventhandler
             imageGrid = new Grid();
             addProductGrid.Children.Add(imageGrid);
             Grid.SetRow(imageGrid, 0);
@@ -273,6 +270,7 @@ namespace AssortmentEditor
             Grid.SetColumn(addToImageBox, 1);
             addToImageBox.Click += AddToImageBox;
 
+            // A ListBox containing available sample images and displaying them using the selectionchanged event
             pictureListBox = new ListBox
             {
                 Margin = new Thickness(5),
@@ -297,14 +295,12 @@ namespace AssortmentEditor
                 pictureListBox.Items.Add("Bildförslag " + (i + 1));
             }
 
+            // grid containing all textboxes and textblocks to set the new products properties
             Grid productPropertiesGrid = new Grid { HorizontalAlignment = HorizontalAlignment.Right };
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            for (int i = 0; i < 7; i++)
+            {
+                productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            }
             productPropertiesGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             productPropertiesGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             addProductGrid.Children.Add(productPropertiesGrid);
@@ -380,6 +376,7 @@ namespace AssortmentEditor
 
         private void AddToImageBox(object sender, RoutedEventArgs e)
         {
+            // adds the path from the currently displayed image to the path TextBox
             if (pictureListBox.SelectedIndex != -1)
             {
                 pathBox.Text = imageArray[pictureListBox.SelectedIndex];
@@ -388,6 +385,7 @@ namespace AssortmentEditor
 
         private void DisplayPicture(object sender, SelectionChangedEventArgs e)
         {
+            // Gets a path from the imageArray by referring to the selected index in the listbox and adds it in the imageGrid
             if (pictureListBox.SelectedIndex != -1)
             {
                 imageGrid.Children.Clear();
@@ -400,10 +398,12 @@ namespace AssortmentEditor
         {
             try
             {
+                // throws an exception if the image doesn't exist
                 if (!File.Exists("Images/" + pathBox.Text))
                 {
                     throw new FileNotFoundException();
                 }
+                // instantiate a new product and set it's properties using textbox.text
                 Product product = new Product
                 {
                     Title = nameBox.Text,
@@ -421,6 +421,7 @@ namespace AssortmentEditor
                 //productList.Serialize(ShopUtils.GetFilePath("Products.json"));
                 MessageBox.Show("Produkt tillagd");
             }
+            // throw exception for input other than integers and decimals in the priceBox
             catch (FormatException)
             {
                 MessageBox.Show("Felaktig inmatning för pris");
@@ -436,13 +437,13 @@ namespace AssortmentEditor
 
             buttonClickGrid.Children.Clear();
 
+            // the main grid for editing products
             Grid editProductGrid = new Grid();
             editProductGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             editProductGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             editProductGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             editProductGrid.ColumnDefinitions.Add(new ColumnDefinition());
             editProductGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
             buttonClickGrid.Children.Add(editProductGrid);
 
             TextBlock changeProductsHeader = ShopUtils.CreateTextBlock("Ändra produkt", 16, TextAlignment.Center);
@@ -476,20 +477,19 @@ namespace AssortmentEditor
             Grid.SetColumn(removeProductButton, 0);
             removeProductButton.Click += RemoveProductClick;
 
+            // using a nested grid to keep the columns leveled and since the other columns doesn't need 7 rows
             Grid productPropertiesGrid = new Grid();
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            for (int i = 0; i < 7; i++)
+            {
+                productPropertiesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            }
             productPropertiesGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             productPropertiesGrid.ColumnDefinitions.Add(new ColumnDefinition());
             editProductGrid.Children.Add(productPropertiesGrid);
             Grid.SetRow(productPropertiesGrid, 1);
             Grid.SetColumn(productPropertiesGrid, 1);
 
+            // add children productPropertiesGrid
             TextBlock editProductHeader = ShopUtils.CreateTextBlock("Produktens egenskaper", 14, TextAlignment.Center);
             productPropertiesGrid.Children.Add(editProductHeader);
 
@@ -556,6 +556,7 @@ namespace AssortmentEditor
 
         private void RemoveProductClick(object sender, RoutedEventArgs e)
         {
+            // to prevent program crash always check if a product has been selected, remove the product from productList using selectedindex in the listbox
             if (editProductListBox.SelectedIndex != -1)
             {
                 productList.RemoveAt(editProductListBox.SelectedIndex);
@@ -565,6 +566,7 @@ namespace AssortmentEditor
                 priceBox.Clear();
                 pathBox.Clear();
                 categoryBox.Clear();
+                //serialize the changes in the productList in order to keep the changes
                 //productList.Serialize(ShopUtils.GetFilePath("Products.json"));
                 MessageBox.Show("Produkt borttagen");
             }
@@ -576,6 +578,7 @@ namespace AssortmentEditor
 
         private void SaveProductChangesClick(object sender, RoutedEventArgs e)
         {
+            // try to set the products properties before serializing the changes
             try
             {
                 productList[editProductListBox.SelectedIndex].Title = nameBox.Text;
@@ -594,6 +597,7 @@ namespace AssortmentEditor
 
         private void AddSelectedProductToTextBox(object sender, SelectionChangedEventArgs e)
         {
+            // to facilitate editing single product properties set the text box content to the selected products properties
             if (editProductListBox.SelectedIndex != -1)
             {
                 nameBox.Text = productList[editProductListBox.SelectedIndex].Title;
@@ -606,6 +610,7 @@ namespace AssortmentEditor
 
         private void UpdateProductListBox()
         {
+            // every time changes are made to products, update the listbox in order to display the changes
             editProductListBox.Items.Clear();
             foreach (Product product in productList)
             {
