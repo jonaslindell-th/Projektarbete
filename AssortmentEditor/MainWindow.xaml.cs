@@ -220,7 +220,7 @@ namespace AssortmentEditor
 
         private void AddNewCouponClick(object sender, RoutedEventArgs e)
         {
- 
+
         }
 
         private void RemoveCouponClick(object sender, RoutedEventArgs e)
@@ -266,14 +266,8 @@ namespace AssortmentEditor
             Grid.SetRow(imageGrid, 0);
             Grid.SetColumn(imageGrid, 3);
 
-            Button addToImageBox = new Button
-            {
-                Content = "Lägg till sökväg",
-                Margin = new Thickness(5),
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                MaxWidth = 120
-            };
+            Button addToImageBox = AssortmentUtils.CreateButton("Lägg till sökväg");
+            addToImageBox.MaxWidth = 120;
             addProductGrid.Children.Add(addToImageBox);
             Grid.SetRow(addToImageBox, 1);
             Grid.SetColumn(addToImageBox, 1);
@@ -326,15 +320,7 @@ namespace AssortmentEditor
             Grid.SetRow(editNameText, 1);
             Grid.SetColumn(editNameText, 0);
 
-            nameBox = new TextBox
-            {
-                Margin = new Thickness(5),
-                Background = textBoxBrush,
-                Foreground = Brushes.White,
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Width = 200
-            };
+            nameBox = AssortmentUtils.CreateTextBox(textBoxBrush);
             productPropertiesGrid.Children.Add(nameBox);
             nameBox.HorizontalAlignment = HorizontalAlignment.Right;
             Grid.SetRow(nameBox, 1);
@@ -345,15 +331,7 @@ namespace AssortmentEditor
             Grid.SetRow(editDescriptionText, 2);
             Grid.SetColumn(editDescriptionText, 0);
 
-            descriptionBox = new TextBox
-            {
-                Margin = new Thickness(5),
-                Background = textBoxBrush,
-                Foreground = Brushes.White,
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Width = 200
-            };
+            descriptionBox = AssortmentUtils.CreateTextBox(textBoxBrush);
             productPropertiesGrid.Children.Add(descriptionBox);
             descriptionBox.HorizontalAlignment = HorizontalAlignment.Right;
             Grid.SetRow(descriptionBox, 2);
@@ -364,15 +342,7 @@ namespace AssortmentEditor
             Grid.SetRow(editPriceText, 3);
             Grid.SetColumn(editPriceText, 0);
 
-            priceBox = new TextBox
-            {
-                Margin = new Thickness(5),
-                Background = textBoxBrush,
-                Foreground = Brushes.White,
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Width = 200
-            };
+            priceBox = AssortmentUtils.CreateTextBox(textBoxBrush);
             productPropertiesGrid.Children.Add(priceBox);
             priceBox.HorizontalAlignment = HorizontalAlignment.Right;
             Grid.SetRow(priceBox, 3);
@@ -383,15 +353,7 @@ namespace AssortmentEditor
             Grid.SetRow(editCategoryText, 4);
             Grid.SetColumn(editCategoryText, 0);
 
-            categoryBox = new TextBox
-            {
-                Margin = new Thickness(5),
-                Background = textBoxBrush,
-                Foreground = Brushes.White,
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Width = 200
-            };
+            categoryBox = AssortmentUtils.CreateTextBox(textBoxBrush);
             productPropertiesGrid.Children.Add(categoryBox);
             categoryBox.HorizontalAlignment = HorizontalAlignment.Right;
             Grid.SetRow(categoryBox, 4);
@@ -402,28 +364,14 @@ namespace AssortmentEditor
             Grid.SetRow(editPathText, 5);
             Grid.SetColumn(editPathText, 0);
 
-            pathBox = new TextBox
-            {
-                Margin = new Thickness(5),
-                Background = textBoxBrush,
-                Foreground = Brushes.White,
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Width = 200
-            };
+            pathBox = AssortmentUtils.CreateTextBox(textBoxBrush);
             productPropertiesGrid.Children.Add(pathBox);
             pathBox.HorizontalAlignment = HorizontalAlignment.Right;
             Grid.SetRow(pathBox, 5);
             Grid.SetColumn(pathBox, 1);
 
-            Button addProductButton = new Button
-            {
-                Content = "Lägg till produkt",
-                Margin = new Thickness(5),
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                MaxWidth = 120
-            };
+            Button addProductButton = AssortmentUtils.CreateButton("Lägg till produkt");
+            addProductButton.MaxWidth = 120;
             productPropertiesGrid.Children.Add(addProductButton);
             Grid.SetRow(addProductButton, 6);
             Grid.SetColumnSpan(addProductButton, 2);
@@ -443,7 +391,7 @@ namespace AssortmentEditor
             if (pictureListBox.SelectedIndex != -1)
             {
                 imageGrid.Children.Clear();
-                Image currentImage = CreateImage("SampleImages/" + imageArray[pictureListBox.SelectedIndex]);
+                Image currentImage = AssortmentUtils.CreateImage("SampleImages/" + imageArray[pictureListBox.SelectedIndex]);
                 imageGrid.Children.Add(currentImage);
             }
         }
@@ -521,15 +469,8 @@ namespace AssortmentEditor
             UpdateProductListBox();
             editProductListBox.SelectionChanged += AddSelectedProductToTextBox;
 
-            Button removeProductButton = new Button
-            {
-                Content = "Ta bort vald produkt",
-                Margin = new Thickness(5, 5, 5, 100),
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                MaxWidth = 120,
-                VerticalAlignment = VerticalAlignment.Top
-            };
+            Button removeProductButton = AssortmentUtils.CreateButton("Ta bort vald produkt");
+            removeProductButton.MaxWidth = 120;
             editProductGrid.Children.Add(removeProductButton);
             Grid.SetRow(removeProductButton, 2);
             Grid.SetColumn(removeProductButton, 0);
@@ -557,15 +498,7 @@ namespace AssortmentEditor
             Grid.SetRow(editNameText, 1);
             Grid.SetColumn(editNameText, 0);
 
-            nameBox = new TextBox
-            {
-                Margin = new Thickness(5),
-                Background = textBoxBrush,
-                Foreground = Brushes.White,
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Width = 200
-            };
+            nameBox = AssortmentUtils.CreateTextBox(textBoxBrush);
             productPropertiesGrid.Children.Add(nameBox);
             nameBox.HorizontalAlignment = HorizontalAlignment.Left;
             Grid.SetRow(nameBox, 1);
@@ -576,15 +509,7 @@ namespace AssortmentEditor
             Grid.SetRow(editDescriptionText, 2);
             Grid.SetColumn(editDescriptionText, 0);
 
-            descriptionBox = new TextBox
-            {
-                Margin = new Thickness(5),
-                Background = textBoxBrush,
-                Foreground = Brushes.White,
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Width = 200
-            };
+            descriptionBox = AssortmentUtils.CreateTextBox(textBoxBrush);
             productPropertiesGrid.Children.Add(descriptionBox);
             descriptionBox.HorizontalAlignment = HorizontalAlignment.Left;
             Grid.SetRow(descriptionBox, 2);
@@ -595,15 +520,7 @@ namespace AssortmentEditor
             Grid.SetRow(editPriceText, 3);
             Grid.SetColumn(editPriceText, 0);
 
-            priceBox = new TextBox
-            {
-                Margin = new Thickness(5),
-                Background = textBoxBrush,
-                Foreground = Brushes.White,
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Width = 200
-            };
+            priceBox = AssortmentUtils.CreateTextBox(textBoxBrush);
             productPropertiesGrid.Children.Add(priceBox);
             priceBox.HorizontalAlignment = HorizontalAlignment.Left;
             Grid.SetRow(priceBox, 3);
@@ -614,15 +531,7 @@ namespace AssortmentEditor
             Grid.SetRow(editCategoryText, 4);
             Grid.SetColumn(editCategoryText, 0);
 
-            categoryBox = new TextBox
-            {
-                Margin = new Thickness(5),
-                Background = textBoxBrush,
-                Foreground = Brushes.White,
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Width = 200
-            };
+            categoryBox = AssortmentUtils.CreateTextBox(textBoxBrush);
             productPropertiesGrid.Children.Add(categoryBox);
             categoryBox.HorizontalAlignment = HorizontalAlignment.Left;
             Grid.SetRow(categoryBox, 4);
@@ -633,29 +542,13 @@ namespace AssortmentEditor
             Grid.SetRow(editPathText, 5);
             Grid.SetColumn(editPathText, 0);
 
-            pathBox = new TextBox
-            {
-                Margin = new Thickness(5),
-                Background = textBoxBrush,
-                Foreground = Brushes.White,
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                Width = 200
-            };
+            pathBox = AssortmentUtils.CreateTextBox(textBoxBrush);
             productPropertiesGrid.Children.Add(pathBox);
             pathBox.HorizontalAlignment = HorizontalAlignment.Left;
             Grid.SetRow(pathBox, 5);
             Grid.SetColumn(pathBox, 1);
 
-            Button saveProductChanges = new Button
-            {
-                Content = "Spara ändringar",
-                Margin = new Thickness(5),
-                BorderThickness = new Thickness(0),
-                FontWeight = FontWeights.SemiBold,
-                MaxWidth = 120,
-                Padding = new Thickness(5, 1, 5, 1)
-            };
+            Button saveProductChanges = AssortmentUtils.CreateButton("Spara ändringar");
             productPropertiesGrid.Children.Add(saveProductChanges);
             Grid.SetRow(saveProductChanges, 6);
             saveProductChanges.Click += SaveProductChangesClick;
@@ -714,27 +607,10 @@ namespace AssortmentEditor
         private void UpdateProductListBox()
         {
             editProductListBox.Items.Clear();
-            foreach (Projektarbete.Product product in productList)
+            foreach (Product product in productList)
             {
                 editProductListBox.Items.Add(product.Title + " (" + product.Price + ") kr");
             }
-        }
-
-        private Image CreateImage(string filePath)
-        {
-            ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
-            Image image = new Image
-            {
-                Source = source,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(5),
-                MaxHeight = 300,
-                MaxWidth = 300
-            };
-            image.Stretch = Stretch.UniformToFill;
-            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
-            return image;
         }
     }
 }
