@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace AssortmentEditor
 {
@@ -18,6 +19,20 @@ namespace AssortmentEditor
                 FontWeight = FontWeights.SemiBold,
             };
             return button;
+        }
+
+        public static TextBox CreateTextBox(Brush background)
+        {
+            TextBox textBox = new TextBox
+            {
+                Margin = new Thickness(5),
+                Background = background,
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                FontWeight = FontWeights.SemiBold,
+                Width = 200
+            };
+            return textBox;
         }
     }
 }
