@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -214,15 +215,23 @@ namespace AssortmentEditor
 
         private void AddNewCouponClick(object sender, RoutedEventArgs e)
         {
-            if(decimal.TryParse(discountBox.Text, out decimal discount))
+            if (decimal.TryParse(discountBox.Text, out decimal discount))
             {
                 decimal converted = 1 - (discount / 100);
 
-                Coupon coupon = new Coupon(codeBox.Text, converted);
-                couponList.Add(coupon);
-                discountBox.Clear();
-                codeBox.Clear();
-                UpdateCouponListBox();
+                // Regex.IsMatch checks if codeBox.Text matches alphabetic characters between a-z and A-Z and numbers 0-9
+                if (codeBox.Text.Length < 21 && codeBox.Text.Length > 2 && Regex.IsMatch(codeBox.Text, "^[a-zA-Z0-9]*$"))
+                {
+                    Coupon coupon = new Coupon(codeBox.Text, converted);
+                    couponList.Add(coupon);
+                    discountBox.Clear();
+                    codeBox.Clear();
+                    UpdateCouponListBox();
+                }
+                else
+                {
+                    MessageBox.Show("Ogiltiga rabattkod");
+                }
             }
             else
             {
@@ -233,7 +242,7 @@ namespace AssortmentEditor
         private void RemoveCouponClick(object sender, RoutedEventArgs e)
         {
             int index = editCouponListBox.SelectedIndex;
-            if(index != -1)
+            if (index != -1)
             {
                 couponList.RemoveAt(index);
                 UpdateCouponListBox();
@@ -254,12 +263,20 @@ namespace AssortmentEditor
             {
                 if (index != -1)
                 {
-                    couponList[index].Code = codeBox.Text;
-                    couponList[index].Discount = 1 - (decimal.Parse(discountBox.Text) / 100);
-                    UpdateCouponListBox();
+                    // Regex.IsMatch checks if codeBox.Text matches alphabetic characters between a-z and A-Z and numbers 0-9 
+                    if (codeBox.Text.Length < 21 && codeBox.Text.Length > 2 && Regex.IsMatch(codeBox.Text, "^[a-zA-Z0-9]*$"))
+                    {
+                        couponList[index].Code = codeBox.Text;
+                        couponList[index].Discount = 1 - (decimal.Parse(discountBox.Text) / 100);
+                        UpdateCouponListBox();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Ogiltiga rabattkod");
+                    }
                 }
             }
-            catch(FormatException)
+            catch (FormatException)
             {
                 MessageBox.Show("Felaktig inmatning!");
             }
@@ -268,7 +285,7 @@ namespace AssortmentEditor
         private void AddSelectedCouponToTextBox(object sender, SelectionChangedEventArgs e)
         {
             int index = editCouponListBox.SelectedIndex;
-            if(index != -1)
+            if (index != -1)
             {
                 int discount = (int)((1 - couponList[index].Discount) * 100);
                 codeBox.Text = couponList[index].Code;
@@ -279,7 +296,7 @@ namespace AssortmentEditor
         private void UpdateCouponListBox()
         {
             editCouponListBox.Items.Clear();
-            foreach(Coupon c in couponList)
+            foreach (Coupon c in couponList)
             {
                 int percent = (int)((1 - c.Discount) * 100);
                 editCouponListBox.Items.Add($"{c.Code} ({percent}%)");
