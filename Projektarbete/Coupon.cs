@@ -11,6 +11,17 @@ namespace Projektarbete
         public string Code { get; set; }
         public decimal Discount { get; set; }
 
+        public Coupon(string code, decimal discount)
+        {
+            Code = code;
+            Discount = discount;
+        }
+        //Parameterless constructor so the json will properly deserialize the coupons from file
+        public Coupon()
+        {
+
+        }
+
         //Check if any coupon code in the json matches the user inputted code
         public static bool IsValid(string code)
         {
@@ -36,16 +47,8 @@ namespace Projektarbete
         {
             List<Coupon> coupons = new List<Coupon>()
             {
-                new Coupon()
-                {
-                    Code = "ABCDE12345",
-                    Discount = 0.7M
-                },
-                new Coupon()
-                {
-                    Code = "XYZ321",
-                    Discount = 0.3M
-                }
+                new Coupon("ABCDE12345", 0.7M),
+                new Coupon("XYZ321", 0.3M)
             };
             coupons.Serialize(ShopUtils.GetFilePath("Coupons.json"));
         }
