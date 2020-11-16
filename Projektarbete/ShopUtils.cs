@@ -113,5 +113,15 @@ namespace Projektarbete
             }
             catch (JsonException) { return new List<Product>(); }
         }
+
+        public static void CreateFiles()
+        {
+            if (!Directory.Exists($@"C:\Windows\Temp\Sebastian_Jonas"))
+            {
+                Directory.CreateDirectory(@"C:\Windows\Temp\Sebastian_Jonas");
+                Product.CreateProductFile();
+                Coupon.CreateCouponFile();
+            }
+        }
     }
 }
