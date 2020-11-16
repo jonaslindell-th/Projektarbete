@@ -50,12 +50,8 @@ namespace Projektarbete
         private void Start()
         {
             System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-            if (!Directory.Exists($@"C:\Windows\Temp\Sebastian_Jonas"))
-            {
-                Directory.CreateDirectory(@"C:\Windows\Temp\Sebastian_Jonas");
-                Product.CreateProductFile();
-                Coupon.CreateCouponFile();
-            }
+
+            ShopUtils.CreateFiles();
 
             productList = ShopUtils.DeserializeProducts(ShopUtils.GetFilePath("Products.json"));
             shoppingCart = ShopUtils.LoadCart();
