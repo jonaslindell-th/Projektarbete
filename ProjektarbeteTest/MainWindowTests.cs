@@ -19,6 +19,7 @@ namespace ProjektarbeteTest
         {
             Assert.AreEqual(false, Coupon.IsValid(""));
         }
+
         [TestMethod]
         public void SaveCartTest()
         {
@@ -66,15 +67,18 @@ namespace ProjektarbeteTest
                         if(p.GetValue(preSaveCart[i]).ToString() != p.GetValue(deserializedCart[i]).ToString())
                         {
                             areEqual = false;
+                            //If they are not equal we should break out of the loop
                             break;
                         }
                     }
+                    //If they are not equal, we break out of the loop and the test will fail.
                     if (!areEqual) break;
                 }
             }
 
             Assert.AreEqual(true, areEqual);
         }
+
         [TestMethod]
         public void InvalidJsonFormatting()
         {
@@ -91,6 +95,43 @@ namespace ProjektarbeteTest
             Assert.AreEqual(3, products.Count);
         }
 
+        [TestMethod]
+        public void DeserializeNonExistentFile()
+        {
+            Action action = delegate 
+            {
+                ShopUtils.DeserializeProducts("null");
+            };
 
+            Assert.ThrowsException<FileNotFoundException>(action);
+        }
+
+        [TestMethod]
+        public void SerializeInvalidDataType()
+        {
+            Action action = delegate
+            {
+                List<string> list = new List<string>()
+                {
+                    "This",
+                    "is",
+                    "a",
+                    "test"
+                };
+                list.Serialize("PathDoesNotMatterHere.png");
+            };
+
+            Assert.ThrowsException<NotImplementedException>(action);
+        }
+
+        [TestMethod]
+        public void CorrectlyCreatesFilesOnStartup()
+        {
+            ShopUtils.CreateFiles();
+
+            Assert.AreEqual(true, File.Exists(ShopUtils.GetFilePath("Cart.json")));
+            Assert.AreEqual(true, File.Exists(ShopUtils.GetFilePath("Products.json")));
+            Assert.AreEqual(true, File.Exists(ShopUtils.GetFilePath("Coupons.json")));
+        }
     }
 }
