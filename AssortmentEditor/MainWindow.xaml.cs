@@ -21,8 +21,8 @@ namespace AssortmentEditor
 {
     public partial class MainWindow : Window
     {
-        List<Product> productList = ShopUtils.DeserializeProducts(ShopUtils.GetFilePath("Products.json"));
-        List<Coupon> couponList = Coupon.DeserializeCoupons();
+        List<Product> productList;
+        List<Coupon> couponList;
         Grid buttonClickGrid;
         Brush listBoxBrush, textBoxBrush;
         ListBox editProductListBox, pictureListBox, editCouponListBox;
@@ -40,12 +40,10 @@ namespace AssortmentEditor
         {
             System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
-            if (!Directory.Exists($@"C:\Windows\Temp\Sebastian_Jonas"))
-            {
-                Directory.CreateDirectory(@"C:\Windows\Temp\Sebastian_Jonas");
-                Product.CreateProductFile();
-                Coupon.CreateCouponFile();
-            }
+            ShopUtils.CreateFiles();
+
+            productList = ShopUtils.DeserializeProducts(ShopUtils.GetFilePath("Products.json"));
+            couponList = Coupon.DeserializeCoupons();
 
             #region Custom brushes
             // declare a brushconverter to convert a hex color code string to a Brush color
@@ -216,27 +214,77 @@ namespace AssortmentEditor
 
         private void AddNewCouponClick(object sender, RoutedEventArgs e)
         {
+            if(decimal.TryParse(discountBox.Text, out decimal discount))
+            {
+                decimal converted = 1 - (discount / 100);
 
+                Coupon coupon = new Coupon(codeBox.Text, converted);
+                couponList.Add(coupon);
+                discountBox.Clear();
+                codeBox.Clear();
+                UpdateCouponListBox();
+            }
+            else
+            {
+                MessageBox.Show("Rabattvärdet du angav är inte ett giltigt nummer.");
+            }
         }
 
         private void RemoveCouponClick(object sender, RoutedEventArgs e)
         {
-  
+            int index = editCouponListBox.SelectedIndex;
+            if(index != -1)
+            {
+                couponList.RemoveAt(index);
+                UpdateCouponListBox();
+                codeBox.Clear();
+                discountBox.Clear();
+                MessageBox.Show("Kupong borttagen.");
+            }
+            else
+            {
+                MessageBox.Show("Ingen kupong vald.");
+            }
         }
 
         private void SaveCouponChangesClick(object sender, RoutedEventArgs e)
         {
-
+            int index = editCouponListBox.SelectedIndex;
+            try
+            {
+                if (index != -1)
+                {
+                    couponList[index].Code = codeBox.Text;
+                    couponList[index].Discount = 1 - (decimal.Parse(discountBox.Text) / 100);
+                    UpdateCouponListBox();
+                }
+            }
+            catch(FormatException)
+            {
+                MessageBox.Show("Felaktig inmatning!");
+            }
         }
 
         private void AddSelectedCouponToTextBox(object sender, SelectionChangedEventArgs e)
         {
-
+            int index = editCouponListBox.SelectedIndex;
+            if(index != -1)
+            {
+                int discount = (int)((1 - couponList[index].Discount) * 100);
+                codeBox.Text = couponList[index].Code;
+                discountBox.Text = discount.ToString();
+            }
         }
 
         private void UpdateCouponListBox()
         {
-
+            editCouponListBox.Items.Clear();
+            foreach(Coupon c in couponList)
+            {
+                int percent = (int)((1 - c.Discount) * 100);
+                editCouponListBox.Items.Add($"{c.Code} ({percent}%)");
+            }
+            couponList.Serialize(ShopUtils.GetFilePath("Coupons.json"));
         }
 
         private void CreateAddProductGrid(object sender, RoutedEventArgs e)
@@ -616,6 +664,7 @@ namespace AssortmentEditor
             {
                 editProductListBox.Items.Add(product.Title + " (" + product.Price + ") kr");
             }
+            productList.Serialize(ShopUtils.GetFilePath("Products.json"));
         }
     }
 }
