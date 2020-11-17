@@ -54,7 +54,7 @@ namespace Projektarbete
             ShopUtils.CreateFiles();
 
             productList = ShopUtils.DeserializeProducts(ShopUtils.GetFilePath("Products.json"));
-            shoppingCart = ShopUtils.LoadCart();
+            shoppingCart = ShopUtils.DeserializeProducts(ShopUtils.GetFilePath("Cart.json"));
             couponList = Coupon.DeserializeCoupons();
 
             #region Custom brushes
