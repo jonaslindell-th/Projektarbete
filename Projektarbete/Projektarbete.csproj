@@ -11,9 +11,9 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-	  <None Remove="Images\Herrgårdsost.jpg" />
+	  <None Remove="Images\Cheese.jpg" />
 	  <None Remove="Images\Keso.jpg" />
-	  <None Remove="Images\Mjölk.jpg" />
+	  <None Remove="Images\Milk.jpg" />
 	  <None Remove="JSON\Cart.json" />
 	  <None Remove="JSON\Products.json" />
 	</ItemGroup>

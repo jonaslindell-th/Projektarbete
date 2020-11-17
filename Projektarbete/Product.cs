@@ -62,7 +62,7 @@ namespace Projektarbete
                     Description = "Energi (kcal) 360 kcal, Energi (kJ) 1493 kJ, Fett 28 g, Varav mättat fett 18 g, Kolhydrater 0 g, Varav socker 0 g, Protein 26 g, Salt 1.3 g, Vitamin B12 1.5 µg, Kalcium 774 mg",
                     Price = 55.99M,
                     Category = "Mejeri",
-                    ProductImage = "Herrgårdsost.jpg",
+                    ProductImage = "Cheese.jpg",
                 },
                 new Product()
                 {
@@ -78,7 +78,7 @@ namespace Projektarbete
                     Description = "ICA Mellanmjölk Lite längre hållbarhet låter kanske för bra för att vara sann.",
                     Price = 10.99M,
                     Category = "Mejeri",
-                    ProductImage = "Mjölk.jpg"
+                    ProductImage = "Milk.jpg"
                 }
             };
             List<Product> cart = new List<Product>();
