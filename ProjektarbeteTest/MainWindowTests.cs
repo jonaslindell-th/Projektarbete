@@ -53,8 +53,8 @@ namespace ProjektarbeteTest
                     ProductImage = ""
                 }
             };
-            preSaveCart.Serialize(ShopUtils.GetFilePath("Cart.json"));
-            List<Product> deserializedCart = ShopUtils.LoadCart();
+            preSaveCart.Serialize(ShopUtils.GetFilePath("TESTCART.json"));
+            List<Product> deserializedCart = ShopUtils.DeserializeProducts(ShopUtils.GetFilePath("TESTCART.json"));
 
             bool areEqual = deserializedCart.Count == preSaveCart.Count;
 
@@ -83,7 +83,7 @@ namespace ProjektarbeteTest
         public void InvalidJsonFormatting()
         {
             List<Product> products = new List<Product>() { new Product(), new Product(), new Product() };
-            string path = ShopUtils.GetFilePath("Cart.json");
+            string path = ShopUtils.GetFilePath("TESTCART.json");
 
             Action action = delegate 
             {
