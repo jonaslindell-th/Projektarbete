@@ -17,12 +17,14 @@ namespace ProjektarbeteTest
         [TestMethod]
         public void InvalidCouponTest()
         {
+            ShopUtils.CreateFiles();
             Assert.AreEqual(false, Coupon.IsValid(""));
         }
 
         [TestMethod]
         public void SaveCartTest()
         {
+            ShopUtils.CreateFiles();
             List<Product> preSaveCart = new List<Product>()
             {
                 new Product()
@@ -82,6 +84,7 @@ namespace ProjektarbeteTest
         [TestMethod]
         public void InvalidJsonFormatting()
         {
+            ShopUtils.CreateFiles();
             List<Product> products = new List<Product>() { new Product(), new Product(), new Product() };
             string path = ShopUtils.GetFilePath("TESTCART.json");
 
@@ -98,6 +101,7 @@ namespace ProjektarbeteTest
         [TestMethod]
         public void DeserializeNonExistentFile()
         {
+            ShopUtils.CreateFiles();
             Action action = delegate 
             {
                 ShopUtils.DeserializeProducts("null");
@@ -109,6 +113,7 @@ namespace ProjektarbeteTest
         [TestMethod]
         public void SerializeInvalidDataType()
         {
+            ShopUtils.CreateFiles();
             Action action = delegate
             {
                 List<string> list = new List<string>()
