@@ -55,6 +55,30 @@ namespace Projektarbete
                     Price = 14.95M,
                     Category = "Kött, fågel & fisk",
                     ProductImage = "Bacon.jpg"
+                },
+                new Product()
+                {
+                    Title = "Herrgård mild 28% ca 667g",
+                    Description = "Energi (kcal) 360 kcal, Energi (kJ) 1493 kJ, Fett 28 g, Varav mättat fett 18 g, Kolhydrater 0 g, Varav socker 0 g, Protein 26 g, Salt 1.3 g, Vitamin B12 1.5 µg, Kalcium 774 mg",
+                    Price = 55.99M,
+                    Category = "Mejeri",
+                    ProductImage = "Herrgårdsost.jpg",
+                },
+                new Product()
+                {
+                    Title = "Cottage cheese Naturell 4% 500g Keso",
+                    Description = "pastöriserad MJÖLK, salt, modifierad stärkelse, VASSLEPERMEAT, syrningskultur, ystenzym.",
+                    Price = 24.99M,
+                    Category = "Mejeri",
+                    ProductImage = "Keso.jpg",
+                },
+                new Product()
+                {
+                    Title = "Mellanmjölk 1.5%",
+                    Description = "ICA Mellanmjölk Lite längre hållbarhet låter kanske för bra för att vara sann.",
+                    Price = 10.99M,
+                    Category = "Mejeri",
+                    ProductImage = "Mjölk.jpg"
                 }
             };
             List<Product> cart = new List<Product>();
