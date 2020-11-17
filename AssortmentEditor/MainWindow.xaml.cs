@@ -230,7 +230,7 @@ namespace AssortmentEditor
                 }
                 else
                 {
-                    MessageBox.Show("Ogiltiga rabattkod");
+                    MessageBox.Show("Koden måste vara minst 3 tecken eller max 20 och endast innehålla engelska bokstäver eller siffror.");
                 }
             }
             else
