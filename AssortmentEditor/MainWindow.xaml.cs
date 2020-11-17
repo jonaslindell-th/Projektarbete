@@ -469,15 +469,23 @@ namespace AssortmentEditor
                     throw new FileNotFoundException();
                 }
                 // instantiate a new product and set it's properties using textbox.text
-                Product product = new Product
+                if (decimal.Parse(priceBox.Text) > 0)
                 {
-                    Title = nameBox.Text,
-                    Description = descriptionBox.Text,
-                    Price = decimal.Parse(priceBox.Text),
-                    ProductImage = pathBox.Text,
-                    Category = categoryBox.Text
-                };
-                productList.Add(product);
+                    Product product = new Product
+                    {
+                        Title = nameBox.Text,
+                        Description = descriptionBox.Text,
+                        Price = decimal.Parse(priceBox.Text),
+                        ProductImage = pathBox.Text,
+                        Category = categoryBox.Text
+                    };
+                    productList.Add(product);
+                }
+                else
+                {
+                    MessageBox.Show("Priset måste vara högre än noll");
+                    return;
+                }
                 nameBox.Clear();
                 descriptionBox.Clear();
                 priceBox.Clear();
@@ -644,12 +652,20 @@ namespace AssortmentEditor
             // try to set the products properties before serializing the changes
             try
             {
-                productList[editProductListBox.SelectedIndex].Title = nameBox.Text;
-                productList[editProductListBox.SelectedIndex].Description = descriptionBox.Text;
-                productList[editProductListBox.SelectedIndex].Price = decimal.Parse(priceBox.Text);
-                productList[editProductListBox.SelectedIndex].Category = categoryBox.Text;
-                productList[editProductListBox.SelectedIndex].ProductImage = pathBox.Text;
-                UpdateProductListBox();
+                if (decimal.Parse(priceBox.Text) > 0)
+                {
+                    productList[editProductListBox.SelectedIndex].Title = nameBox.Text;
+                    productList[editProductListBox.SelectedIndex].Description = descriptionBox.Text;
+                    productList[editProductListBox.SelectedIndex].Price = decimal.Parse(priceBox.Text);
+                    productList[editProductListBox.SelectedIndex].Category = categoryBox.Text;
+                    productList[editProductListBox.SelectedIndex].ProductImage = pathBox.Text;
+                    UpdateProductListBox();
+                    MessageBox.Show("Produkt ändrad");
+                }
+                else
+                {
+                    MessageBox.Show("Priset måste vara högre än noll");
+                }
             }
             catch (Exception ex)
             {
