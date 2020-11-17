@@ -148,16 +148,6 @@ namespace Projektarbete
             File.WriteAllText(serializePath, json);
         }
 
-        public static List<Product> LoadCart()
-        {
-            try
-            {
-                List<Product> items = DeserializeProducts(GetFilePath("Cart.json"));
-                return items;
-            }
-            catch (JsonException) { return new List<Product>(); }
-        }
-
         public static void CreateFiles()
         {
             if (!Directory.Exists($@"C:\Windows\Temp\Sebastian_Jonas"))
