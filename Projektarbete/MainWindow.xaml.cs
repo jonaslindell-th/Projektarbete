@@ -431,7 +431,7 @@ namespace Projektarbete
             if (categoryBox.SelectedIndex != 0 && categoryBox != null)
             {
                 string category = categoryList[categoryBox.SelectedIndex - 1];
-                var searchTermProducts = productList.Where(product => product.Category.Contains(category));
+                var searchTermProducts = productList.Where(product => product.Category == category);
                 foreach (Product product in searchTermProducts)
                 {
                     searchTermList.Add(product);
