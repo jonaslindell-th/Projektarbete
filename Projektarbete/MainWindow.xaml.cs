@@ -302,7 +302,7 @@ namespace Projektarbete
             rightStackPanel.Children.Add(imageGrid);
 
             // sets a startup image
-            currentImage = CreateImage("Images/Ica.png");
+            currentImage = ShopUtils.CreateImage("Images/Ica.png", false);
             imageGrid.Children.Add(currentImage);
 
             productDescriptionHeading = ShopUtils.CreateTextBlock("", 16, TextAlignment.Center, rightStackPanel);
@@ -502,26 +502,11 @@ namespace Projektarbete
                 productHeading.Text = searchTermList[productListBox.SelectedIndex].Title;
                 // clear the imageGrid children to prevent images from stacking on top of each other
                 imageGrid.Children.Clear();
-                currentImage = CreateImage("Images/" + searchTermList[productListBox.SelectedIndex].ProductImage);
+                currentImage = ShopUtils.CreateImage("Images/" + searchTermList[productListBox.SelectedIndex].ProductImage, true);
                 imageGrid.Children.Add(currentImage);
                 productDescriptionHeading.Text = "Produktbeskrivning";
                 productDescription.Text = searchTermList[productListBox.SelectedIndex].Description;
             }
-        }
-
-        private Image CreateImage(string filePath)
-        {
-            ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
-            Image image = new Image
-            {
-                Source = source,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(5),
-                MaxHeight = 330
-            };
-            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
-            return image;
         }
 
         private void RemoveProductClick(object sender, RoutedEventArgs e)

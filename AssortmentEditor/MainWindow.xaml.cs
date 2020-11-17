@@ -341,7 +341,7 @@ namespace AssortmentEditor
                 Margin = new Thickness(5),
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                MaxHeight = 425,
+                MaxHeight = 300,
                 MaxWidth = 300,
                 MinWidth = 300,
                 MinHeight = 300,
@@ -454,7 +454,7 @@ namespace AssortmentEditor
             if (pictureListBox.SelectedIndex != -1)
             {
                 imageGrid.Children.Clear();
-                Image currentImage = ShopUtils.CreateImage("SampleImages/" + imageArray[pictureListBox.SelectedIndex]);
+                Image currentImage = ShopUtils.CreateImage("SampleImages/" + imageArray[pictureListBox.SelectedIndex], true);
                 imageGrid.Children.Add(currentImage);
             }
         }

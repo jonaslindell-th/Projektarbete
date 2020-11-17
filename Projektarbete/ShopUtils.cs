@@ -87,7 +87,7 @@ namespace Projektarbete
             return textBox;
         }
 
-        public static Image CreateImage(string filePath)
+        public static Image CreateImage(string filePath, bool maxwidth)
         {
             ImageSource source = new BitmapImage(new Uri(filePath, UriKind.Relative));
             Image image = new Image
@@ -96,10 +96,12 @@ namespace Projektarbete
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(5),
-                MaxHeight = 300,
-                MaxWidth = 300
+                MaxHeight = 330
             };
-            image.Stretch = Stretch.UniformToFill;
+            if (maxwidth)
+            {
+                image.MaxWidth = 300;
+            }
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
             return image;
         }
