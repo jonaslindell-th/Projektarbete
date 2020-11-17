@@ -396,6 +396,8 @@ namespace Projektarbete
 
             // reset the shopping cart
             shoppingCart.Clear();
+            string path = ShopUtils.GetFilePath("Cart.json");
+            shoppingCart.Serialize(path);
             currentCoupon = null;
             hasDiscount = false;
             couponComboBox.SelectedIndex = 0;
