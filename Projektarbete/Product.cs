@@ -46,7 +46,7 @@ namespace Projektarbete
                     Description = "ICA Revbensspjäll Tjocka är matiga spjäll som går att koka, grilla eller steka i ugn. Du kan marinera dem upp till ett dygn i kylskåp och sedan ugnssteka på 175 grader i cirka 1-1,5 tim tills innertemperaturen når cirka 85 grader. Du kan också koka dem först, sedan marinera över natten och slutligen ugnssteka dem. En snabbvariant är också att tillaga dem som de är i cirka 1 timme och sen pensla på glaze och in i ugnen igen i cirka 10 min för lite fin yta. Och det viktigaste: köttet kommer från utvalda svenska gårdar.",
                     Price = 77.95M,
                     Category = "Kött, fågel & fisk",
-                    ProductImage = "Bacon.jpg",
+                    ProductImage = "Revben.jpg",
                 },
                 new Product()
                 {
@@ -79,6 +79,30 @@ namespace Projektarbete
                     Price = 10.99M,
                     Category = "Mejeri",
                     ProductImage = "Milk.jpg"
+                },
+                new Product()
+                {
+                    Title = "Blandfärs 50/50 ca 1,6kg ICA",
+                    Description = "ICA Blandfärs är svenskt, fint malen 50/50-blandning av nöt- och fläskfärs som passar till allt ifrån köttbullar och järpar till köttfärssås och tacos. Fläsket ger färsen en lätt och rund smak och gör den enklare att forma om du till exempel vill göra köttbullar.",
+                    Price = 115.12M,
+                    Category = "Kött, fågel & fisk",
+                    ProductImage = "Mincedmeat.jpg"
+                },
+                new Product()
+                {
+                    Title = "Jäst för matbröd 50g Kronjäst",
+                    Description = "Färsk jäst som ger jäskraft till degar för matbröd. Rör ut jästen i fingervarm degvätska (ca 38 grader), eller kall degvätska (ca 10 grader) för kalljäsning.",
+                    Price = 3.50M,
+                    Category = "Skafferi",
+                    ProductImage = "Yeast.jpg"
+                },
+                new Product()
+                {
+                    Title = "Krossade Tomater 500g ICA",
+                    Description = "ICA Krossade tomater är krossade italienska solmogna tomater i tomatjuice och kanske den ultimata basvaran att ha i skafferiet för att snabbt få ihop en middag. God att bara krydda upp med lite vitlök och basilika till en pastasås eller låta bli smakbärare i en soppa.",
+                    Price = 11.50M,
+                    Category = "Skafferi",
+                    ProductImage = "Crushedtomatoes.jpg"
                 }
             };
             List<Product> cart = new List<Product>();

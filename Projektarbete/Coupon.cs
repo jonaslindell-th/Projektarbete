@@ -48,7 +48,9 @@ namespace Projektarbete
             List<Coupon> coupons = new List<Coupon>()
             {
                 new Coupon("ABCDE12345", 0.7M),
-                new Coupon("XYZ321", 0.3M)
+                new Coupon("XYZ321", 0.3M),
+                new Coupon("Matsmart50", 0.5M),
+                new Coupon("STAMKUND", 0.15M)
             };
             coupons.Serialize(ShopUtils.GetFilePath("Coupons.json"));
         }
