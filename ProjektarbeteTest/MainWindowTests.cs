@@ -95,6 +95,7 @@ namespace ProjektarbeteTest
             };
 
             Assert.ThrowsException<JsonException>(action);
+            //If the exception is thrown, the product count should still remain 3
             Assert.AreEqual(3, products.Count);
         }
 
