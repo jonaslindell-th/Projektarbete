@@ -55,7 +55,7 @@ namespace AssortmentEditor
             #endregion
 
             // Window options
-            Title = "Sortiment hanteraren";
+            Title = "Sortimenthanteraren";
             Width = 1100;
             Height = 600;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -79,7 +79,7 @@ namespace AssortmentEditor
             mainGrid.Background = backgroundBrush;
 
             // Window heading, always visible
-            TextBlock headingTextBlock = ShopUtils.CreateTextBlock("Sortiment hanteraren", 18, TextAlignment.Center);
+            TextBlock headingTextBlock = ShopUtils.CreateTextBlock("Sortimenthanteraren", 18, TextAlignment.Center);
             mainGrid.Children.Add(headingTextBlock);
             Grid.SetRow(headingTextBlock, 0);
             Grid.SetColumnSpan(headingTextBlock, 2);
