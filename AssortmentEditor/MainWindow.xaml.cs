@@ -317,20 +317,23 @@ namespace AssortmentEditor
             addProductGrid.ColumnDefinitions.Add(new ColumnDefinition());
             buttonClickGrid.Children.Add(addProductGrid);
 
+            Grid availableImagesGrid = new Grid();
+            availableImagesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            availableImagesGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            availableImagesGrid.RowDefinitions.Add(new RowDefinition());
+            availableImagesGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            addProductGrid.Children.Add(availableImagesGrid);
+            Grid.SetColumn(availableImagesGrid, 1);
+            Grid.SetRow(availableImagesGrid, 0);
+
             TextBlock addProductHeader = ShopUtils.CreateTextBlock("Urval för bilder", 14, TextAlignment.Center);
-            addProductGrid.Children.Add(addProductHeader);
+            availableImagesGrid.Children.Add(addProductHeader);
             Grid.SetRow(addProductHeader, 0);
             Grid.SetColumn(addProductHeader, 1);
 
-            // using a class field grid to be able to set the currently selected image from selectionchanged eventhandler
-            imageGrid = new Grid();
-            addProductGrid.Children.Add(imageGrid);
-            Grid.SetRow(imageGrid, 0);
-            Grid.SetColumn(imageGrid, 3);
-
             Button addToImageBox = ShopUtils.CreateButton("Lägg till sökväg");
             addToImageBox.MaxWidth = 120;
-            addProductGrid.Children.Add(addToImageBox);
+            availableImagesGrid.Children.Add(addToImageBox);
             Grid.SetRow(addToImageBox, 1);
             Grid.SetColumn(addToImageBox, 1);
             addToImageBox.Click += AddToImageBox;
@@ -350,8 +353,8 @@ namespace AssortmentEditor
                 BorderThickness = new Thickness(0),
                 FontWeight = FontWeights.SemiBold
             };
-            addProductGrid.Children.Add(pictureListBox);
-            Grid.SetRow(pictureListBox, 0);
+            availableImagesGrid.Children.Add(pictureListBox);
+            Grid.SetRow(pictureListBox, 2);
             Grid.SetColumn(pictureListBox, 1);
             pictureListBox.SelectionChanged += DisplayPicture;
 
@@ -359,6 +362,13 @@ namespace AssortmentEditor
             {
                 pictureListBox.Items.Add("Bildförslag " + (i + 1));
             }
+
+            // using a class field grid to be able to set the currently selected image from selectionchanged eventhandler
+            imageGrid = new Grid();
+            addProductGrid.Children.Add(imageGrid);
+            Grid.SetRow(imageGrid, 0);
+            Grid.SetColumn(imageGrid, 3);
+
 
             // grid containing all textboxes and textblocks to set the new products properties
             Grid productPropertiesGrid = new Grid { HorizontalAlignment = HorizontalAlignment.Right };

@@ -470,19 +470,19 @@ namespace Projektarbete
             bool validCoupon = Coupon.IsValid(input);
 
             //This will update our coupon if the discount will leave the user with a better price than before
-            if (validCoupon && currentCoupon != null)
-            {
-                Coupon compare = Coupon.DeserializeCoupons().First(x => x.Code == input);
-                if (compare.Discount < currentCoupon.Discount)
-                {
-                    currentCoupon = compare;
-                }
-                else
-                {
-                    MessageBox.Show("Din nuvarande rabattkod har en bättre rabatt än den du nyligen matade in!");
-                }
+            //if (validCoupon && currentCoupon != null)
+            //{
+            //    Coupon compare = Coupon.DeserializeCoupons().First(x => x.Code == input);
+            //    if (compare.Discount < currentCoupon.Discount)
+            //    {
+            //        currentCoupon = compare;
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("Din nuvarande rabattkod har en bättre rabatt än den du nyligen matade in!");
+            //    }
 
-            }
+            //}
 
             currentCoupon = validCoupon ? Coupon.DeserializeCoupons().First(x => x.Code == input) : null;
 
@@ -493,7 +493,11 @@ namespace Projektarbete
                 MessageBox.Show("Den inmatade rabattkoden är ej giltig, försök igen.");
                 return;
             }
-            UpdateCartListBox();
+            else
+            {
+                MessageBox.Show("Du har aktiverat en giltig rabattkod.");
+                UpdateCartListBox();
+            }
         }
 
         private void DisplaySelectedProduct(object sender, SelectionChangedEventArgs e)
