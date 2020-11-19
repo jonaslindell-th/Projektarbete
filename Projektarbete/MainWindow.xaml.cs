@@ -470,19 +470,20 @@ namespace Projektarbete
             bool validCoupon = Coupon.IsValid(input);
 
             //This will update our coupon if the discount will leave the user with a better price than before
-            //if (validCoupon && currentCoupon != null)
-            //{
-            //    Coupon compare = Coupon.DeserializeCoupons().First(x => x.Code == input);
-            //    if (compare.Discount < currentCoupon.Discount)
-            //    {
-            //        currentCoupon = compare;
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("Din nuvarande rabattkod har en bättre rabatt än den du nyligen matade in!");
-            //    }
+            if (validCoupon && currentCoupon != null)
+            {
+                Coupon compare = Coupon.DeserializeCoupons().First(x => x.Code == input);
+                if (compare.Discount < currentCoupon.Discount)
+                {
+                    currentCoupon = compare;
+                }
+                else
+                {
+                    MessageBox.Show("Din nuvarande rabattkod har en bättre rabatt än den du nyligen matade in!");
+                    return;
+                }
 
-            //}
+            }
 
             currentCoupon = validCoupon ? Coupon.DeserializeCoupons().First(x => x.Code == input) : null;
 
