@@ -20,3 +20,10 @@ To prevent the same product from appearing several times in the shopping cart we
 
 In order for changes to appear in the shopping cart listbox a method is declared, which clears the listbox items and adds the items in the shopping cart list anew, then calcutaltes the new sum.
 To display additional information about a selected product apart from name and price we use the event handler SelectionChanged where we utilize the SelectedIndex property to reference from marked product in the listbox to the correct product in the product list in order to display its image and description in the right column.
+
+![](https://github.com/jonaslindell-th/Projektarbete/blob/master/Screenshots/Startup.png?raw=true)
+![](https://github.com/jonaslindell-th/Projektarbete/blob/master/Screenshots/SelectedProduct.png?raw=true)
+![](https://github.com/jonaslindell-th/Projektarbete/blob/master/Screenshots/Cart.png?raw=true)
+![](https://github.com/jonaslindell-th/Projektarbete/blob/master/Screenshots/Checkout.png?raw=true)
+![](https://github.com/jonaslindell-th/Projektarbete/blob/master/Screenshots/EditProduct.png?raw=true)
+![](https://github.com/jonaslindell-th/Projektarbete/blob/master/Screenshots/EditCoupon.png?raw=true)
