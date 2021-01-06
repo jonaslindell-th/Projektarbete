@@ -25,8 +25,12 @@ At first we were using csv to store and read products from file, but was later c
 
 With a larger product range a search function would facilitate finding the products the user is looking for by name or category. A product property for category is added to the product class, a combobox is used to display the available categories and a textbox is used to be able to search for a product by name.
 To be able to discard the products which doesn't match the given search term, we use the event handler TextChanged which clears the product range listbox. To be able to only add serach related products to the listbox we use a lambda expression which loops through the product range list and only adds the items to the listbox which contains the search term, to make searches caseinsensitive we use tolower on the search term and the product names.
-By simply clearing the product listbox and only displaying the products matching the search term, we are no longer able to refer to the correct product in the product range list by index.
 
+```csharp
+            var searchTermProducts = productList.Where(product => product.Title.ToLower().Contains(searchTerm.ToLower()));
+```
+
+By simply clearing the product listbox and only displaying the products matching the search term, we are no longer able to refer to the correct product in the product range list by index.
 
 # Screenshots
 ![](https://github.com/jonaslindell-th/Projektarbete/blob/master/Screenshots/Startup.png?raw=true)
