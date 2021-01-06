@@ -21,6 +21,14 @@ To prevent the same product from appearing several times in the shopping cart we
 In order for changes to appear in the shopping cart listbox a method is declared, which clears the listbox items and adds the items in the shopping cart list anew, then calcutaltes the new sum.
 To display additional information about a selected product apart from name and price we use the event handler SelectionChanged where we utilize the SelectedIndex property to reference from marked product in the listbox to the correct product in the product list in order to display its image and description in the right column.
 
+At first we were using csv to store and read products from file, but was later changed to json which main advantage is being able to store and read objects directly using the key/value pairs syntax. A method is declared which runs upon start, reading the product range from file using the streamreader and json Deserialise classmethod.
+
+With a larger product range a search function would facilitate finding the products the user is looking for by name or category. A product property for category is added to the product class, a combobox is used to display the available categories and a textbox is used to be able to search for a product by name.
+To be able to discard the products which doesn't match the given search term, we use the event handler TextChanged which clears the product range listbox. To be able to only add serach related products to the listbox we use a lambda expression which loops through the product range list and only adds the items to the listbox which contains the search term, to make searches caseinsensitive we use tolower on the search term and the product names.
+By simply clearing the product listbox and only displaying the products matching the search term, we are no longer able to refer to the correct product in the product range list by index.
+
+
+# Screenshots
 ![](https://github.com/jonaslindell-th/Projektarbete/blob/master/Screenshots/Startup.png?raw=true)
 ![](https://github.com/jonaslindell-th/Projektarbete/blob/master/Screenshots/SelectedProduct.png?raw=true)
 ![](https://github.com/jonaslindell-th/Projektarbete/blob/master/Screenshots/Cart.png?raw=true)
