@@ -31,6 +31,11 @@ To be able to discard the products which doesn't match the given search term, we
 ```
 
 By simply clearing the product listbox and only displaying the products matching the search term, we are no longer able to refer to the correct product in the product range list by index.
+We considered reading the products from file every time a search was made, but with a larger product range this solution would affect performance.
+To solve this problem we use two separate lists, one which reads the entire product range from file upon application start up, and one search term list which is displayed in the listbox. To display and refer to the correct SelectedIndex in the listbox, the search term list is cleared every time the textbox content changes and the eventhandler adds the matching products. To display the entire product range upon start up using this method we simply run it with a empty string as its search term parameter. 
+
+To display a receipt upon checkout we want to avoid using Messagebox.Show since its incalculable to use for anything more then a few lines. Since we are not allowed to open new windows for our assignment and we still want to be able to use the application once a order has been placed, we decided to reuse the product description column for our receipt.
+To display a large amount of data in a perspicuous way we use a readonly DataGrid.
 
 # Screenshots
 ![](https://github.com/jonaslindell-th/Projektarbete/blob/master/Screenshots/Startup.png?raw=true)
